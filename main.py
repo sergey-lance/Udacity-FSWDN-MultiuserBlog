@@ -37,15 +37,16 @@ class Rot13Handler(RequestHandler):
 		self.render('rot13-form.html')
 	
 	def post(self):
-		utext = self.request.get('text')
+		text = self.request.get('text')
 		rot13=""
-		if utext:
-			rot13 = utext.encode('rot13', errors='ignore') #ignore unicode chars
+		if text:
+			rot13 = text.encode('rot13', errors='ignore') #ignore unicode chars
 			
 		self.render('rot13-form.html', text = rot13)
 
 app = webapp2.WSGIApplication([
-	('/', Rot13Handler)
+	('/', Rot13Handler),
+	('/rot13', Rot13Handler),
 ], debug=True)
 
 
