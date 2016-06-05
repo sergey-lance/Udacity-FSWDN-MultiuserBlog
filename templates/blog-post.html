@@ -1,0 +1,7 @@
+{% extends "blog-layout.html" %}
+
+{% block body %}
+	<h2>{{post.subject}}</h2>
+	<div>{{post.content|safe}}
+	</div>
+{% endblock %}

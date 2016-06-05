@@ -1,0 +1,22 @@
+{% extends "blog-layout.html" %}
+
+{% block title %}New Post{% endblock %}
+
+{% block body %}
+<style>
+label, input, textarea {display: block; margin: 1em;}
+label {margin-bottom: 0;}
+label + input, label + textarea {margin-top: 0}
+
+</style>
+<form method="post">
+	<label>Subject:</label>
+	<input type="text" name="subject"></input>
+	<label>Content:</label>
+	<textarea name="content" 
+	style="height: 100px; width: 400px;">{{text|escape}}</textarea>
+	<div class='error'>{{error}}</div>
+	<br>
+	<input type="submit">
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "blog-layout.html" %}
+
+{% block body %}
+<section id='posts'>
+{% for post in posts %}
+	<article>
+		<h2>{{post.subject}}</h2>
+		<span class='created'>{{post.created}}</span>
+		<div>
+		{{post.content|safe}}
+		</div>
+	</article>
+{% else %}
+	<p>No posts yet. Try to <a href="/blog/newpost">post</a> something.</p>
+{% endfor %}
+</section>
+{% endblock %}
+
