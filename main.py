@@ -9,11 +9,29 @@ import sys,os,re
 import webapp2
 import jinja2
 
+from google.appengine.ext import db
+from lxml.html.clean import Cleaner
+
 # Template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(
 		loader = jinja2.FileSystemLoader(template_dir),
 		autoescape = True,
+		)
+
+# Html cleaner
+ALLOW_TAGS = ['a', 'img', 'abbr', 'acronym', 'q',
+		'b', 'i', 'u', 'em', 's', 'small', 'sub', 'sup',
+		'br', 'p',
+		'pre', 'code', 'del', 'ins',
+		'li', 'ol', 'ul', 'dl', 'dd', 'dt',
+		]
+		
+html_cleaner = Cleaner(
+		safe_attrs_only = True,
+		add_nofollow=True,
+		allow_tags = ALLOW_TAGS,
+		remove_unknown_tags = False, #need this
 		)
 
 def render_str(template, **params):
@@ -43,7 +61,6 @@ class Rot13Handler(RequestHandler):
 			rot13 = text.encode('rot13', errors='ignore') #ignore unicode chars
 			
 		self.render('rot13-form.html', text = rot13)
-
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -98,11 +115,61 @@ class WelcomeHandler(RequestHandler):
 		else:
 			self.redirect('/signup')
 
+### Blog
+def blog_key(name = 'default'):
+	return db.Key.from_path('blogs', name)
+
+class Post(db.Model):
+	subject = db.StringProperty(required = True)
+	content = db.TextProperty(required = True)
+	created = db.DateTimeProperty(auto_now_add = True)
+	last_modified = db.DateTimeProperty(auto_now = True)
+	
+	def render(self):
+		self._render_text = self.content.replace('\n', '<br>')
+		return render_str("post.html", p = self)
+
+class BlogFrontpage(RequestHandler):
+	def get(self):
+		posts = db.GqlQuery("select * from Post order by created desc limit 10")
+		self.render('blog-frontpage.html', posts = posts)
+
+class BlogPost(RequestHandler):
+	def get(self, post_id):
+		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		post = db.get(key)
+
+		if not post:
+			self.error(404)
+			return
+
+		self.render("blog-post.html", post = post)
+
+class BlogNewpost(RequestHandler):
+	def get(self):
+		self.render("blog-newpost.html")
+	
+	def post(self):
+		subject = self.request.get('subject')
+		content = self.request.get('content')
+		content = html_cleaner.clean_html(content)
+
+		if subject and content:
+			p = Post(parent = blog_key(), subject = subject, content = content)
+			p.put()
+			self.redirect('/blog/%s' % str(p.key().id()))
+		else:
+			error = "subject and content, please!"
+			self.render("blog-newpost.html", subject=subject, content=content, error=error)
+
 app = webapp2.WSGIApplication([
 	('/', SignupHandler),
 	('/signup', SignupHandler),
 	('/rot13', Rot13Handler),
 	('/welcome', WelcomeHandler),
+	('/blog/?', BlogFrontpage),
+	('/blog/([0-9]+)', BlogPost),
+	('/blog/newpost', BlogNewpost),
 ], debug=True)
 
 
