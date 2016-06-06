@@ -11,7 +11,7 @@ class WelcomeHandler(RequestHandler):
 
 class BlogFrontpage(RequestHandler):
 	def get(self):
-		self.write("Blog")
+		self.write("Blog" )
 
 class BlogNewpost(RequestHandler):
 	def get(self):
@@ -19,18 +19,18 @@ class BlogNewpost(RequestHandler):
 
 class BlogPost(RequestHandler):
 	def get(self, post_id):
-		self.write("Post")
+		self.write("Post %s" %post_id)
 		
 class BlogEdit(RequestHandler):
 	def get(self, post_id):
-		self.write("Edit")
+		self.write("Edit %s" %post_id)
 		
 class BlogDelete(RequestHandler):
 	def get(self, post_id):
-		self.write("Delete")
+		self.write("Delete %s" %post_id)
 		
 class BlogVote(RequestHandler):
 	def get(self, post_id):
-		self.write("Vote")
+		self.write("Vote %s" %post_id)
 			
 

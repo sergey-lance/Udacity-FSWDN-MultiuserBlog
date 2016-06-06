@@ -45,10 +45,18 @@ app = webapp2.WSGIApplication([
 	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'),
 	PathPrefixRoute('/blog', [
         Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'),
-        Route(r'/<post_id:\d+>', 'handlers.BlogPost', name='blog-post'),
-        Route(r'/<post_id:\d+>/edit', 'handlers.BlogEdit', name='blog-edit'),
-        Route(r'/<post_id:\d+>/delete', 'handlers.BlogDelete', name='blog-delete'),
-        Route(r'/<post_id:\d+>/vote', 'handlers.BlogVote', name='blog-vote' ),
+        PathPrefixRoute(r'/<post_id:\d+>', [
+			Route(r'<:/?>', 'handlers.BlogPost', name='blog-post'),
+			Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'),
+			Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'),
+			Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ),
+			Route(r'/comment', 'comments.PostComment', name='post-comment' ),
+        ]),
+        PathPrefixRoute(r'/comments/<comment_id:\d+>', [
+			Route(r'/edit', 'comments.EditComment', name='comment-edit'),
+			Route(r'/delete', 'comments.DeleteComment', name='comment-delete'),
+			Route(r'/vote', 'comments.VoteComment', name='comment-vote' ),
+        ]),
     ]),
     Route('/login', 'auth.LoginHandler'),
     Route('/logout', 'auth.LogoutHandler'),
