@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% set new = True %}
+{% if post is defined %}
+{% set new = False %}
+{% endif %}
+
+{% block body %}
+<script>
+$(function() {
+    $("textarea").htmlarea({
+                toolbar: ["html", "|",
+                        "forecolor",  // <-- Add the "forecolor" Toolbar Button
+                        "|", "bold", "italic", "underline", "|", "h1", "h2", "h3", "|", "link", "unlink"] // Overrides/Specifies the Toolbar buttons to show
+                });
+});
+</script>
+<style type="text/css">
+	.edit-form-wrapper {position:relative; margin: 0 auto; padding: 0 2em; }
+	label {display: block; }
+	.content-area {height: 100px; width: 100%;}
+	.error {display: block; margin-left: 8em; color: red}
+	input[type=submit] {display: block; margin: 1em 0;}
+</style>
+
+<section class="edit-form-wrapper">
+	<h2>{% if new %}New post{% else %}Edit post #{%endif%}</h2>
+	<form method="post">
+	<label>Title:</label>
+	<input type="text" name="title" value="{% if not new %}{{post.title}}{% endif %}" />
+	<label>Content:</label>
+	<textarea name="content" class='content-area'>{% if not new %}{{post.content|escape}}{% endif %}</textarea>
+	<div class='error'>{{error}}</div>
+	<br>
+	<input type="submit" value="{% if new %} Create {% else %} Update {%endif%}">
+	</form>
+</section>
+{% endblock %}
+
+

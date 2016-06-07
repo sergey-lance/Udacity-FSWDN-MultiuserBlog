@@ -3,6 +3,11 @@
 
 from main import RequestHandler
 
+from collections import namedtuple
+
+Post = namedtuple('Post', ['title','content'])
+post = Post(title="hehe", content='con')
+
 # Request Handlers
 class WelcomeHandler(RequestHandler):
 	def get(self):
@@ -11,19 +16,19 @@ class WelcomeHandler(RequestHandler):
 
 class BlogFrontpage(RequestHandler):
 	def get(self):
-		self.write("Blog" )
+		self.render('blog-frontpage.html')
 
 class BlogNewpost(RequestHandler):
 	def get(self):
-		self.write("New")
+		self.render('blog-edit.html')
 
 class BlogPost(RequestHandler):
 	def get(self, post_id):
-		self.write("Post %s" %post_id)
+		self.render('blog-post.html', post=post)
 		
 class BlogEdit(RequestHandler):
 	def get(self, post_id):
-		self.write("Edit %s" %post_id)
+		self.render('blog-edit.html', post=post)
 		
 class BlogDelete(RequestHandler):
 	def get(self, post_id):

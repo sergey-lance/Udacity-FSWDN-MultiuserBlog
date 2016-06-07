@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style type="text/css">
+	.signup-form-wrapper {position:relative; max-width: 400px; margin: 0 auto;}
+	form {display: block; padding: 1em; }
+	label {display: inline-block; width: 8em; text-align:right;}
+	input {display: inline-block; width: 10em; }
+	.error {display: block; margin-left: 8em; color: red}
+	input[type=submit] {display: block; margin: 1em 0;}
+	.catcha {margin-bottom:0;}
+</style>
+<section class="signup-form-wrapper">
+	<h2>Signup</h2>
+	<form method="post">
+		<p>
+			<label class="username">Username:</label>
+			<input type="text" name="username" value="{{username}}">
+			<span class="error">{{err_username|safe}}</span>
+		</p>
+		<p>
+			<label class="password">Password:</label>
+			<input type="password" name="password" value="">
+			<span class="error">{{err_password|safe}}</span>
+		</p>
+		<p>
+			<label class="verify">Verify Password:</label>
+			<input type="password" name="verify" value="">
+			<span class="error">{{err_verify|safe}}</span>
+		</p>
+		<p>
+			<label class="email">Email:</label>
+			<input type="text" name="email" value="{{email}}">
+			<span class="error">{{err_email|safe}}</span>
+		</p>
+		<p class="catcha">Are you a cat?</p>
+		<img width="300" src="/img/recatcha-static.gif" onclick="this.src='/img/recatcha-ok.gif'; this.onclick=null;">
+		<!-- Yeah, it's fake. ;) -->
+		
+		<input type="submit">
+	</form>
+</section>
+{% endblock %}
+

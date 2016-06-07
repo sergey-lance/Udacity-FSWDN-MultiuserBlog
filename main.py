@@ -41,25 +41,25 @@ class RequestHandler(webapp2.RequestHandler):
 # URI Routing
 
 app = webapp2.WSGIApplication([
-	RedirectRoute('/', redirect_to='/blog/'),
-	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'),
+	RedirectRoute('/', redirect_to='/blog/', name='home'),
+	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'), #done
 	PathPrefixRoute('/blog', [
-        Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'),
+        Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), #done
         PathPrefixRoute(r'/<post_id:\d+>', [
-			Route(r'<:/?>', 'handlers.BlogPost', name='blog-post'),
-			Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'),
-			Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'),
-			Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ),
-			Route(r'/comment', 'comments.PostComment', name='post-comment' ),
+			Route(r'<:/?>', 'handlers.BlogPost', name='blog-post'), #done
+			Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
+			Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
+			Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
+			Route(r'/comment', 'comments.PostComment', name='post-comment' ), #
         ]),
         PathPrefixRoute(r'/comments/<comment_id:\d+>', [
 			Route(r'/edit', 'comments.EditComment', name='comment-edit'),
 			Route(r'/delete', 'comments.DeleteComment', name='comment-delete'),
-			Route(r'/vote', 'comments.VoteComment', name='comment-vote' ),
         ]),
     ]),
-    Route('/login', 'auth.LoginHandler'),
-    Route('/logout', 'auth.LogoutHandler'),
-    Route('/signup', 'auth.SignupHandler'),
+    Route('/login', 'auth.LoginHandler', name="login"), #done
+    Route('/logout', 'auth.LogoutHandler', name="logout"), #done
+    Route('/signup', 'auth.SignupHandler', name="signup"), #done
+    Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), #done
     
 ], debug=True)

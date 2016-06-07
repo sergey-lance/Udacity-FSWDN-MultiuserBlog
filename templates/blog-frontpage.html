@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<article>
+	<h2 class="blog-title"><a href="/blog/1/">Blog Entry Title</a></h2>
+	<p class="blog-date">February 11, 2016</p>
+	<p class="blog-author"><img class='avatar' src="http://placekitten.com/50/50"><span class="name">By Hehe Bebe</span></p>
+	<div class="article-contents">
+	<p>Meow. Meowww. </p>
+	</div>
+	<div class="article-info">
+		<p class="blog-votes">
+			<a class="vote-button-down" href="#down">-</a>
+			<span class="vote-result">123</span>
+			<a class="vote-button-up" href="#up">+</a>
+		</p>
+		<p class="blog-comments"> 
+		<a href="/blog/1/">5 comments</a>
+		</p>
+	</div>
+</article>
+<article>
+	<h2 class="blog-title">Blog Entry Title</h2>
+	<p class="blog-date">February 11, 2016</p>
+	<p class="blog-author"><img class='avatar' src="http://placekitten.com/50/50"><span class="name">By Hehe Bebe</span></p>
+	<div class="article-contents">
+	<p>Meow. Meowww.
+	</p>
+</article>
+{% endblock %}

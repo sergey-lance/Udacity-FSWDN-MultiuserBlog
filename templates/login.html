@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style type="text/css">
+	.login-form-wrapper { width:22em; margin: 0 auto;}
+	form { background: #eef; padding: 1em;}
+	label {display: inline-block; width: 8em; text-align:right; }
+	input {display: inline-block; width: 10em; }
+	.error {display: block; margin-left: 8em; color: red}
+	input[type=submit] {display: block; margin: 0 auto;}
+</style>
+
+<section class="login-form-wrapper">
+<h2>Login</h2>
+<form method="post">
+	<p>
+		<label class="username">Username:</label>
+		<input type="text" name="username" value="{{username}}">
+		<span class="error">{{err_username|safe}}</span>
+	</p>
+	<p>
+		<label class="password">Password:</label>
+		<input type="password" name="password" value="">
+		<span class="error">{{err_password|safe}}</span>
+	</p>
+	
+	<input type="submit" value="Login">
+</form>
+</section>
+{% endblock %}

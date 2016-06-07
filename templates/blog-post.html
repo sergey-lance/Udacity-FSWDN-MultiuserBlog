@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<article class="single-post">
+	<h2 class="blog-title">Blog Entry Title</h2>
+	<p class="blog-date">February 11, 2016</p>
+	<p class="blog-author"><img class='avatar' src="http://placekitten.com/50/50"><span class="name">By Hehe Bebe</span></p>
+	<div class="article-contents">
+	<p>Meow. Meowww. </p>
+	</div>
+	<p class="blog-votes">
+		<a class="vote-button-down" href="#down">-</a>
+		<span class="vote-result">123</span>
+		<a class="vote-button-up" href="#up">+</a>
+	</p>
+	<h3>Comments:</h3>
+	{% include "compose-comment.html" %}
+</article>
+
+{% endblock %}

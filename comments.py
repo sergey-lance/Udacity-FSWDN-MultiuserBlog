@@ -15,6 +15,3 @@ class DeleteComment(RequestHandler):
 	def get(self, comment_id):
 		self.write("COmment -delete")
 
-class VoteComment(RequestHandler):
-	def get(self, comment_id):
-		self.write("COmment -vote")

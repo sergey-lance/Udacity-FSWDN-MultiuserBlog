@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MultiuserBlog Project</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+	<link rel="shortcut icon" href="./favicon.ico">
+	<link rel="stylesheet" href="/css/normalize.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<header id="header" class="width-wrap">
+		<div class="login-menu"><a href="{{ uri_for('login') }}">Log In</a> | <a href="{{ uri_for('signup') }}">Sign Up</a> Logged in as Someone <a href="{{ uri_for('logout') }}">Logout</a></div>
+		<h1 class="logo"><a href="/"><img src="/img/logo2.png" alt="Cat A Strophe !" /></a></h1>
+		<p class="subtitle">the world's first microblog for cats</p>
+	</header>
+	
+	<div class="pagewrap width-wrap">
+		{% block body %}{% endblock %}
+	</div>
+	
+	<footer class="width-wrap">
+	<nav>
+		<ul>
+		<li class="copyright">&copy; <a href="mailto:sergey-inform@ya.ru">Sergey Ryzhikov</a> 2016</li>
+		<li>/&nbsp;<a href="{{ uri_for('home') }}">Home</a></li>	
+		<li>↑&nbsp;<a href="#header">Go to top</a></li>	
+		</ul>
+	</nav>
+	<p>Inspired by <a href="http://www.catipsum.com/">www.catipsum.com</a>. <br> Get a T-shirt with logo: <a href="http://www.uppstudio.com/Cat-A-Strophe-Hoodie-Cats">www.uppstudio.com</a>. </p>
+	</footer>
+</body>
+</html>
