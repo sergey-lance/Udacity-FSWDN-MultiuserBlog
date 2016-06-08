@@ -47,8 +47,9 @@ header a {
 	
 header .logo {
 	width: 200px;	
-	height: 200px;
-	margin: 1em auto; /* center */
+	height: 159px;
+	margin: 25px auto; /* center */
+	overflow: hidden;
 } 
 
 header .subtitle {
@@ -131,6 +132,7 @@ footer nav:after {
 .blog-author, .blog-date {
 	color: #655;
 	margin: 0;
+	margin: 5px 0;
 }
 
 .blog-author {
