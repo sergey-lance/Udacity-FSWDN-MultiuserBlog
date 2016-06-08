@@ -14,7 +14,9 @@
 </head>
 <body>
 	<header id="header" class="width-wrap">
-		<div class="login-menu"><a href="{{ uri_for('login') }}">Log In</a> | <a href="{{ uri_for('signup') }}">Sign Up</a> Logged in as Someone <a href="{{ uri_for('logout') }}">Logout</a></div>
+		<div class="login-menu">{% if user %} Logged in as <b>{{user.name|title}}</b><br/><a href="{{ uri_for('logout') }}">Logout</a>
+		{%else %}<a href="{{ uri_for('login') }}">Log In</a> | <a href="{{ uri_for('signup') }}">Sign Up</a>
+		{% endif %}</div>
 		<h1 class="logo"><a href="/"><img src="/img/logo2.png" alt="Cat A Strophe !" /></a></h1>
 		<p class="subtitle">the world's first microblog for cats</p>
 	</header>
