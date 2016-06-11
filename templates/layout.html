@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="{% if user %}logged-in{% endif %}">
 <head>
 	<title>MultiuserBlog Project</title>
 	<meta charset="UTF-8">
@@ -13,9 +13,11 @@
 	<![endif]-->
 </head>
 <body>
-	<header id="header" class="width-wrap">
-		<div class="login-menu">{% if user %} Logged in as <b>{{user.name|title}}</b><br/><a href="{{ uri_for('logout') }}">Logout</a>
-		{%else %}<a href="{{ uri_for('login') }}">Log In</a> | <a href="{{ uri_for('signup') }}">Sign Up</a>
+	<header id="top" class="width-wrap">
+		<div class="login-menu">{% if user %} Logged in as <b>{{user.name|title}}</b>
+		{% if user.avatar %}<img class="login-menu-avatar" src="/img/ava/{{user.avatar}}">{% endif %}<br>
+		<a href="{{ uri_for('logout') }}">Logout</a>
+		{%else %}<a href="{{ uri_for('login') }}#login">Log In</a> | <a href="{{ uri_for('signup') }}#signup">Sign Up</a>
 		{% endif %}</div>
 		<h1 class="logo"><a href="/"><img src="/img/logo2.png" alt="Cat A Strophe !" /></a></h1>
 		<p class="subtitle">the world's first microblog for cats</p>
@@ -30,10 +32,10 @@
 		<ul>
 		<li class="copyright">&copy; <a href="mailto:sergey-inform@ya.ru">Sergey Ryzhikov</a> 2016</li>
 		<li>/&nbsp;<a href="{{ uri_for('home') }}">Home</a></li>	
-		<li>↑&nbsp;<a href="#header">Go to top</a></li>	
+		<li>↑&nbsp;<a href="#top">Go to top</a></li>	
 		</ul>
 	</nav>
-	<p>Inspired by <a href="http://www.catipsum.com/">www.catipsum.com</a>. <br> Get a T-shirt with logo: <a href="http://www.uppstudio.com/Cat-A-Strophe-Hoodie-Cats">www.uppstudio.com</a>. </p>
+	<p>Inspired by <a href="http://www.catipsum.com/">www.catipsum.com</a>. <br> Get a T-shirt with the logo: <a href="http://www.uppstudio.com/Cat-A-Strophe-T-Shirt-Cats">www.uppstudio.com</a>. </p>
 	</footer>
 </body>
 </html>

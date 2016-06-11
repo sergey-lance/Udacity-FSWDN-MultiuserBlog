@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from google.appengine.ext import ndb
+# Inspired by : https://github.com/abahgat/webapp2-user-accounts
 
+from google.appengine.ext import ndb
 from webapp2_extras.auth import InvalidAuthIdError
 from webapp2_extras.auth import InvalidPasswordError
 
-import logging
-import re
-
 from main import RequestHandler
 
-#https://github.com/abahgat/webapp2-user-accounts
+# Docs:
+# https://webapp-improved.appspot.com/_modules/webapp2_extras/appengine/auth/models.html
+# https://webapp-improved.appspot.com/_modules/webapp2_extras/auth.html
+
 #csrf http://stackoverflow.com/questions/8384729/is-there-any-available-solution-to-provide-xsrf-csrf-support-for-google-app-engi
 #https://gist.github.com/jgeewax/2942374
 
 def user_required(handler):
-	"""
-		Decorator that checks if there's a user associated with the current session.
+	""" Decorator that checks if there's a user associated with the current session.
 		Will also fail if there's no session present.
 	"""
 	def check_login(self, *args, **kwargs):
@@ -40,8 +40,14 @@ class LoginHandler(RequestHandler):
 		
 		params = dict(username=username)
 		
+		if not username or not password:
+			params['err_password'] = 'Enter username and password, please.'
+			self._serve(params)
+			return
+		
+		auth_id = "own:" + username.lower()
 		try:
-			u = self.auth.get_user_by_password(username, password,
+			u = self.auth.get_user_by_password(auth_id, password,
 					remember=True, save_session=True)
 			self.redirect(self.uri_for('welcome'))
 
@@ -53,9 +59,10 @@ class LoginHandler(RequestHandler):
 		
 		self._serve(params)
 	
+	
 	def _serve(self, params={}):
 		self.render('login.html', **params)
-		
+
 
 class LogoutHandler(RequestHandler):
 	def get(self):
@@ -63,7 +70,7 @@ class LogoutHandler(RequestHandler):
 		self.redirect(self.uri_for('home'))
 
 
-
+import re
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 
@@ -72,6 +79,8 @@ def valid_username(username):
 
 def valid_email(email):
 	return (email=="") or EMAIL_RE.match(email)
+
+
 
 class SignupHandler(RequestHandler):
 	def get(self):
@@ -105,14 +114,20 @@ class SignupHandler(RequestHandler):
 			return
 		
 		# Create user
-		unique_properties = ['email']
+		unique_properties = []
+		if email:
+			unique_properties.append('email')
+			
+		auth_id = 'own:'+ username.lower()
 		
-		create_ok, create_info = self.user_model.create_user(username,
+		create_ok, create_info = self.user_model.create_user(auth_id,
 				unique_properties,
 				email=email,
 				password_raw=password,
-				name=username
+				name=username,
 				)
+		
+		#TODO: avatar upload to BlobStor.
 		
 		if not create_ok:
 			# if failed, create_info is a list of non-unique properties
@@ -128,7 +143,6 @@ class SignupHandler(RequestHandler):
 		
 		user = create_info # if ok, create_info is a User instance
 		user_dict = self.auth.store.user_to_dict(user)
-		logging.info(user_dict)
 		
 		self.auth.set_session(user_dict) # Authenticate user
 		self.redirect(self.uri_for('welcome'))
@@ -136,9 +150,4 @@ class SignupHandler(RequestHandler):
 		
 	def _serve(self, params={}):
 		self.render('signup.html', **params)
-			
-		
-				
 
-
-logging.getLogger().setLevel(logging.DEBUG)

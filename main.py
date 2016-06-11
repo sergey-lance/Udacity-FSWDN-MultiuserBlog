@@ -97,7 +97,7 @@ class RequestHandler(webapp2.RequestHandler):
 appconfig = {
   'webapp2_extras.auth': {
     'user_model': 'models.User',
-    'user_attributes': ['name'] # will be cached in session (no access to storage)
+    'user_attributes': ['name', 'avatar'] # will be cached in session (no access to storage)
   },
   'webapp2_extras.sessions': {
     'secret_key': 'BEBEBEChangeItOnProductionServerBEBEBE'

@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import time
-from webapp2_extras.appengine.auth.models import User as User_model
+from webapp2_extras.appengine.auth.models import User
+from webapp2_extras.security import generate_password_hash 
 
 from google.appengine.ext import ndb
 
-from webapp2_extras import security
 
-class User(User_model):
+class User(User):
+	
+	avatar = ndb.StringProperty(required=False, default="new.png")
+	
 	def set_password(self, raw_password):
 		"""Sets the password for the current user
 		:param raw_password:
 		The raw password which will be hashed and stored
 		"""
-		self.password = security.generate_password_hash(raw_password, length=12)
+		self.password = generate_password_hash(raw_password, length=16)
 
 	@classmethod
 	def get_by_auth_token(cls, user_id, token, subject='auth'):
@@ -28,7 +31,6 @@ class User(User_model):
 		"""
 		token_key = cls.token_model.get_key(user_id, subject, token)
 		user_key = ndb.Key(cls, user_id)
-		# Use get_multi() to save a RPC call.
 		valid_token, user = ndb.get_multi([token_key, user_key])
 		if valid_token and user:
 				timestamp = int(time.mktime(valid_token.created.timetuple()))
