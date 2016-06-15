@@ -1,30 +1,43 @@
 {% extends "layout.html" %}
 
 {% block body %}
+<nav class="frontpage-actions">
+	{% if user %}
+	<a href="{{uri_for('blog-newpost')}}" class="frontpage-actions-link add-post">Add post</a>
+	{% endif %}
+</nav>
+
+{% for post in posts %}
+{% set author = users_dict[post.author] %}
 <article>
-	<h2 class="blog-title"><a href="/blog/1/">Blog Entry Title</a></h2>
-	<p class="blog-date">February 11, 2016</p>
-	<p class="blog-author"><img class='avatar' src="http://placekitten.com/50/50"><span class="name">By Hehe Bebe</span></p>
+	<h2 class="blog-title"><a href="{{uri_for('blog-post', post_id=post.key.id() )}}">{{post.title|striptags|e}}</a></h2>
+	<p class="blog-date">{{post.created.strftime('%B %d, %Y') }}</p>
+	<p class="blog-author">
+		<object class='avatar' type="image/png" data="/img/ava/new.png" >
+			<img class='avatar' src="/img/ava/{{author['avatar']}}">
+		</object>
+		<span class="name">By {{author['name']}}</span></p>
 	<div class="article-contents">
-	<p>Meow. Meowww. </p>
+	{{post.content|safe}}
 	</div>
 	<div class="article-info">
+		{% if post.score is defined %}
 		<p class="blog-votes">
 			<a class="vote-button-down" href="#down">-</a>
-			<span class="vote-result">123</span>
+			<span class="vote-result">{{post.score}}</span>
 			<a class="vote-button-up" href="#up">+</a>
 		</p>
-		<p class="blog-comments"> 
-		<a href="/blog/1/">5 comments</a>
-		</p>
+		{% endif %}
+		
+		<p class="blog-comments"><a href="/blog/1/">
+		{%if post.comments %}
+			{{ post.comments|count }} comments
+		{% else %}
+			Comment
+		{% endif %}
+		</a></p>
 	</div>
 </article>
-<article>
-	<h2 class="blog-title">Blog Entry Title</h2>
-	<p class="blog-date">February 11, 2016</p>
-	<p class="blog-author"><img class='avatar' src="http://placekitten.com/50/50"><span class="name">By Hehe Bebe</span></p>
-	<div class="article-contents">
-	<p>Meow. Meowww.
-	</p>
-</article>
+
+{% endfor %}
 {% endblock %}

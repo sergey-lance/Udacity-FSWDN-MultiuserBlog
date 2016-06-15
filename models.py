@@ -39,13 +39,15 @@ class User(User):
 		return None, None
 
 class Record(ndb.Model): # attributes are common for posts and comments
-	text = ndb.TextProperty()
+	content = ndb.TextProperty()
 	author = ndb.KeyProperty(kind = User)
 	created = ndb.DateTimeProperty(auto_now_add=True)
+	
 	# rating system:
 	upvoters = ndb.KeyProperty(kind = User,repeated=True)
 	downvoters = ndb.KeyProperty(kind = User,repeated=True)
-	score = ndb.ComputedProperty(lambda self: self.upvoters.count() - self.downvoters.count() )
+	score = ndb.ComputedProperty(lambda self: len(self.upvoters) - len(self.downvoters) )
+	# comments  /scroll down/
 	
 class Post(Record):
 	title = ndb.StringProperty()

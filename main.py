@@ -13,6 +13,8 @@ from webapp2_extras.routes import RedirectRoute, PathPrefixRoute
 from webapp2_extras import auth
 from webapp2_extras import sessions
 
+from lxml.html.clean import Cleaner
+
 ## Template engine
 # TODO: a better solution: https://webapp-improved.appspot.com/api/webapp2_extras/jinja2.html#webapp2_extras.jinja2.Jinja2
 
@@ -92,16 +94,33 @@ class RequestHandler(webapp2.RequestHandler):
 			self.session_store.save_sessions(self.response)
 
 
+# Html cleaner
+ALLOW_TAGS = ['a', 'img', 'abbr', 'acronym', 'q',
+		'b', 'i', 'u', 'em', 's', 'small', 'sub', 'sup',
+		'br', 'p',
+		'pre', 'code', 'del', 'ins',
+		'li', 'ol', 'ul', 'dl', 'dd', 'dt',
+		]
+		
+html_cleaner = Cleaner(
+		safe_attrs_only = True,
+		add_nofollow=True,
+		allow_tags = ALLOW_TAGS,
+		remove_unknown_tags = False, #need this
+		)
+		
+RequestHandler.clean_html = html_cleaner.clean_html
+
 ## Application configuration
 
 appconfig = {
-  'webapp2_extras.auth': {
-    'user_model': 'models.User',
-    'user_attributes': ['name', 'avatar'] # will be cached in session (no access to storage)
-  },
-  'webapp2_extras.sessions': {
-    'secret_key': 'BEBEBEChangeItOnProductionServerBEBEBE'
-  }
+	'webapp2_extras.auth': {
+		'user_model': 'models.User',
+		'user_attributes': ['name', 'avatar'] # will be cached in session (no access to storage)
+	},
+	'webapp2_extras.sessions': {
+		'secret_key': 'BEBEBEChangeItOnProductionServerBEBEBE'
+	}
 }
 
 ## Routing
@@ -111,22 +130,23 @@ app = webapp2.WSGIApplication([
 	RedirectRoute('/', redirect_to='/blog/', name='home'),
 	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'), #done
 	PathPrefixRoute('/blog', [
-        Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), #done
-        PathPrefixRoute(r'/<post_id:\d+>', [
-			Route(r'<:/?>', 'handlers.BlogPost', name='blog-post'), #done
-			Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
-			Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
-			Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
-			Route(r'/comment', 'comments.PostComment', name='post-comment' ), #
-        ]),
-        PathPrefixRoute(r'/comments/<comment_id:\d+>', [
+		Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), #done
+		PathPrefixRoute(r'/<post_id:\d+/?>', [
+				Route(r'', 'handlers.BlogPost', name='blog-post'), #done
+				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
+				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
+				Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
+				Route(r'/comment', 'comments.PostComment', name='post-comment' ), #
+		
+		]),
+		PathPrefixRoute(r'/comments/<comment_id:\d+>', [
 			Route(r'/edit', 'comments.EditComment', name='comment-edit'),
 			Route(r'/delete', 'comments.DeleteComment', name='comment-delete'),
-        ]),
-    ]),
-    Route('/login', 'auth.LoginHandler', name="login"), #done
-    Route('/logout', 'auth.LogoutHandler', name="logout"), #done
-    Route('/signup', 'auth.SignupHandler', name="signup"), #done
-    Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), #done
-    
+		]),
+	]),
+	Route('/login', 'auth.LoginHandler', name="login"), #done
+	Route('/logout', 'auth.LogoutHandler', name="logout"), #done
+	Route('/signup', 'auth.SignupHandler', name="signup"), #done
+	Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), #done
+	
 ], debug=True, config = appconfig)

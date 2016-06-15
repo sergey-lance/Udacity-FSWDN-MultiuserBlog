@@ -212,3 +212,14 @@ footer nav:after {
 	}
 	
 
+.frontpage-actions {
+	text-align: left;
+	}
+	
+.frontpage-actions .frontpage-actions-link {
+	padding: 5px 10px;
+	border: 1px solid #fa5555;
+	color: #fa5555;
+	text-decoration: none;
+	border-radius: 3px;
+	}
