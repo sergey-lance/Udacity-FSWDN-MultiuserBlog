@@ -1,42 +1,56 @@
 {% extends "layout.html" %}
 
-{% set new = True %}
-{% if post is defined %}
-{% set new = False %}
+{% if new is not defined %}
+	{% set new = false %}
 {% endif %}
 
+{% block head %}
+<link rel="stylesheet" href="/js/trumbowyg/ui/trumbowyg.min.css">
+{% endblock %}
+
 {% block body %}
-<script>
-$(function() {
-    $("textarea").htmlarea({
-                toolbar: ["html", "|",
-                        "forecolor",  // <-- Add the "forecolor" Toolbar Button
-                        "|", "bold", "italic", "underline", "|", "h1", "h2", "h3", "|", "link", "unlink"] // Overrides/Specifies the Toolbar buttons to show
-                });
-});
-</script>
 <style type="text/css">
 	.edit-form-wrapper {position:relative; margin: 0 auto; padding: 0 2em; }
-	label {display: block; }
+	label {display: block; margin: 10px 0 0 0; }
 	.content-area {height: 100px; width: 100%;}
 	.error {display: block; color: red}
-	input[type=submit] {display: block; margin: 1em 0;}
+	input[name=title] {width: 70%;}
+	input[type=submit] {background: #55fa55; margin: 1em 0;}
+	.trumbowyg-box {margin: 0;}
+	.cancel-button {margin: 0 1em;}
 </style>
 
 <section class="edit-form-wrapper">
-	<h2>{% if new %}New post{% else %}Edit post #{%endif%}</h2>
+	<h2>{% if new %}New post{% else %}Edit{% endif %}</h2>
 	<form method="post">
-	<label>Title:</label>
-	<input type="text" name="title" value="{% if not new %}{{post.title|escape}}{% endif %}" />
-	<span class='error'>{{err_title|safe}}</span>
-	<label>Content:</label>
-	<textarea name="content" class='content-area'>{% if not new %}{{post.content|striptags}}{% endif %}</textarea>
-	<textarea name="content-html" class='content-area htmlarea'>{% if not new %}{{post.content|safe}}{% endif %}</textarea>
-	<div class='error'>{{error|safe}}</div>
-	<br>
-	<input type="submit" value="{% if new %} Create {% else %} Update {%endif%}">
+		<label>Title:</label>
+		<input type="text" name="title" value="{{title|escape}}" />
+		<span class='error'>{{err_title|safe}}</span>
+		
+		<label>Content:</label>
+		<textarea name="content-html" class='content-area htmlarea'>
+			{% if not new %}{{content|safe}}{% endif %}
+		</textarea>
+		<div class='error'>{{error|safe}}</div>
+		{% if new %}
+			<input type="submit" value="Create">
+		{% else %}
+			<input type="submit" value="Update">
+			<a href="/" class="cancel-button">Cancel</a>
+			<a href="./delete" class="delete-button">× Delete</a>
+		{% endif %}
 	</form>
 </section>
 {% endblock %}
 
-
+{% block basement %}
+<!-- // WYSIWYG html editor -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js"><\/script>')</script>
+<script src="/js/trumbowyg/trumbowyg.min.js"></script>
+<script>
+$('.htmlarea').trumbowyg({
+    btns: [['viewHTML'],'btnGrp-semantic','btnGrp-lists',['link'],['removeformat']]
+});
+</script>
+{% endblock %}

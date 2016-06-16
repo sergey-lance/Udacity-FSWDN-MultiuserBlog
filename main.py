@@ -13,8 +13,6 @@ from webapp2_extras.routes import RedirectRoute, PathPrefixRoute
 from webapp2_extras import auth
 from webapp2_extras import sessions
 
-from lxml.html.clean import Cleaner
-
 ## Template engine
 # TODO: a better solution: https://webapp-improved.appspot.com/api/webapp2_extras/jinja2.html#webapp2_extras.jinja2.Jinja2
 
@@ -29,7 +27,6 @@ jinja_env.globals['uri_for'] = webapp2.uri_for # to use uri_for() in templates
 def render_str(template, **params):
 	t = jinja_env.get_template(template)
 	return t.render(params) 
-
 
 class RequestHandler(webapp2.RequestHandler):
 	def write(self, *a, **kw):
@@ -93,23 +90,6 @@ class RequestHandler(webapp2.RequestHandler):
 		finally:
 			self.session_store.save_sessions(self.response)
 
-
-# Html cleaner
-ALLOW_TAGS = ['a', 'img', 'abbr', 'acronym', 'q',
-		'b', 'i', 'u', 'em', 's', 'small', 'sub', 'sup',
-		'br', 'p',
-		'pre', 'code', 'del', 'ins',
-		'li', 'ol', 'ul', 'dl', 'dd', 'dt',
-		]
-		
-html_cleaner = Cleaner(
-		safe_attrs_only = True,
-		add_nofollow=True,
-		allow_tags = ALLOW_TAGS,
-		remove_unknown_tags = False, #need this
-		)
-		
-RequestHandler.clean_html = html_cleaner.clean_html
 
 ## Application configuration
 
