@@ -6,7 +6,6 @@ import os
 import sys
 import unittest
 
-
 USAGE = """%prog SDK_PATH TEST_PATH
 Run unit tests for App Engine apps.
 

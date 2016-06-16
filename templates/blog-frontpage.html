@@ -6,17 +6,15 @@
 	<a href="{{uri_for('blog-newpost')}}" class="frontpage-actions-link add-post">Add post</a>
 	{% endif %}
 </nav>
-
+{% if posts %}
 {% for post in posts %}
 {% set author = users_dict[post.author] %}
 <article>
 	<h2 class="blog-title"><a href="{{uri_for('blog-post', post_id=post.key.id() )}}">{{post.title|striptags|e}}</a></h2>
 	<p class="blog-date">{{post.created.strftime('%B %d, %Y') }}</p>
 	<p class="blog-author">
-		<object class='avatar' type="image/png" data="/img/ava/new.png" >
-			<img class='avatar' src="/img/ava/{{author['avatar']}}">
-		</object>
-		<span class="name">By {{author['name']}}</span></p>
+		<img class='avatar' src="/img/ava/{{author['avatar']}}">
+		<span class="name">by <em>{{author['name']}}</em></span></p>
 	<div class="article-contents">
 	{{post.content|safe}}
 	</div>
@@ -40,4 +38,8 @@
 </article>
 
 {% endfor %}
+{% else %}
+<p>The blog is empty.</p>
+{% endif %}
+
 {% endblock %}

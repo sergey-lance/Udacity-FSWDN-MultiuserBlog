@@ -38,26 +38,27 @@ class User(User):
 
 		return None, None
 
+
+class Votes(ndb.Model):
+	upvoters = ndb.KeyProperty(kind = User,repeated=True)
+	downvoters = ndb.KeyProperty(kind = User,repeated=True)
+	score = ndb.IntegerProperty()
+
+
 class Record(ndb.Model): # attributes are common for posts and comments
 	content = ndb.TextProperty()
 	author = ndb.KeyProperty(kind = User)
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	
-	# rating system:
-	upvoters = ndb.KeyProperty(kind = User,repeated=True)
-	downvoters = ndb.KeyProperty(kind = User,repeated=True)
-	score = ndb.ComputedProperty(lambda self: len(self.upvoters) - len(self.downvoters) )
-	# comments  /scroll down/
+	
+class Comment(Record):
+	locked = ndb.BooleanProperty() # True means the author of the comment can't change it anymore...
+				# (because of timeout or because it had been answered by another user.)
+	
 	
 class Post(Record):
 	title = ndb.StringProperty()
-	#~ @property
-	#~ def all_comments_as_json(self):
-		#~ ''' All comments of the post cachable and downloadable at once via a single ajax call. '''
-		#~ pass
-	
-class Comment(Record):
-	locked = ndb.BooleanProperty() # True means the author of the comment can't change it's anymore...
-				# (because of timeout or because it had already been commented by another user.)
+	comments = ndb.KeyProperty(kind = Comment, repeated = True) # recursive comments (comment on comment)
 
-Record.comments = ndb.KeyProperty(kind = Comment, repeated = True) # recursive comments (comment on comment)
+
+

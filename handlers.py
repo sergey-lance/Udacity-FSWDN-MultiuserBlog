@@ -20,7 +20,7 @@ class WelcomeHandler(RequestHandler):
 class BlogFrontpage(RequestHandler):
 	def get(self):
 		# Posts
-		posts = Post.query().order(-Post.created) #TODO: pagination
+		posts = Post.query().order(-Post.created).fetch() #TODO: pagination
 		
 		# Users
 		user_keys = set((p.author for p in posts)) 
