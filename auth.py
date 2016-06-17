@@ -35,8 +35,8 @@ class LoginHandler(RequestHandler):
 		self._serve()
 	
 	def post(self):
-		username = self.request.get('username')
-		password = self.request.get('password')
+		username = self.request.POST['username']
+		password = self.request.POST['password']
 		
 		params = dict(username=username)
 		
@@ -87,10 +87,10 @@ class SignupHandler(RequestHandler):
 		self._serve()
 	
 	def post(self):
-		username= self.request.get('username')
-		password = self.request.get('password')
-		verify = self.request.get('verify')
-		email = self.request.get('email')
+		username= self.request.POST['username']
+		password = self.request.POST['password']
+		verify = self.request.POST['verify']
+		email = self.request.POST['email']
 		
 		params = dict(username = username, email = email)
 		err_params = {}

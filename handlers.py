@@ -59,8 +59,8 @@ def _verify_post_params(request):
 	'''
 	is_ok = True
 	
-	title = request.get('title')
-	content = request.get('content-html')
+	title = request.POST['title'] # using POST instead of .get()
+	content = request.POST['content-html']
 	if content:
 		content = _html_cleaner.clean_html(content)
 	
@@ -132,7 +132,7 @@ class BlogEdit(RequestHandler):
 			self.abort(403)
 
 		# Delete button was pressed
-		if self.request.get('delete'):
+		if self.request.POST['delete']:
 			post.key.delete()
 			time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
 					# So wait a little bit and let ndb to invalidate caches.
@@ -152,7 +152,6 @@ class BlogEdit(RequestHandler):
 		self.redirect(self.uri_for('blog-onepost',  post_id = post.key.id() ))
 		
 	def _serve(self, **params):
-		logging.info(self.request.get('hehe'))
 		self.render('blog-edit.html', **params)
 		
 		
