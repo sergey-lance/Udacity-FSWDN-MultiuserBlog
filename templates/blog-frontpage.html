@@ -1,23 +1,35 @@
 {% extends "layout.html" %}
 
 {% block body %}
+
+{% if user %}
 <nav class="frontpage-actions">
-	{% if user %}
 	<a href="{{uri_for('blog-newpost')}}" class="frontpage-actions-link add-post">Add post</a>
-	{% endif %}
 </nav>
+{% endif %}
+
 {% if posts %}
-{% for post in posts %}
-{% set author = users_dict[post.author] %}
+	{% for post in posts %}
+		{% set author = users_dict[post.author] %}
+		{% set uri = uri_for('blog-onepost', post_id=post.key.id() ) %}
+		{% set user_is_author = user is defined and (post.author.id() == user.user_id) %}
 <article>
-	<h2 class="blog-title"><a href="{{uri_for('blog-post', post_id=post.key.id() )}}">{{post.title|striptags|e}}</a></h2>
+	<h2 class="blog-title">
+		<a href="{{uri}}">
+			{{post.title|striptags|e}}
+		</a>
+	</h2>
 	<p class="blog-date">{{post.created.strftime('%B %d, %Y') }}</p>
 	<p class="blog-author">
+		{% if user_is_author %}
+		<span class="name">by <em>You</em></span><a href="{{uri}}/edit">edit</a></p>
+		{% else %}
 		<img class='avatar' src="/img/ava/{{author['avatar']}}">
 		<span class="name">by <em>{{author['name']}}</em></span></p>
+		{% endif %}
 	<div class="article-contents">
 	{{post.content|safe}}
-	</div>
+	</div> 
 	<div class="article-info">
 		{% if post.score is defined %}
 		<p class="blog-votes">
@@ -27,7 +39,7 @@
 		</p>
 		{% endif %}
 		
-		<p class="blog-comments"><a href="/blog/1/">
+		<p class="blog-comments"><a href="{{uri}}">
 		{%if post.comments %}
 			{{ post.comments|count }} comments
 		{% else %}
@@ -36,10 +48,8 @@
 		</a></p>
 	</div>
 </article>
-
-{% endfor %}
+	{% endfor %}
 {% else %}
 <p>The blog is empty.</p>
 {% endif %}
-
 {% endblock %}

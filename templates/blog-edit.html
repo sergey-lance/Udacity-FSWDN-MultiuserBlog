@@ -37,7 +37,7 @@
 		{% else %}
 			<input type="submit" value="Update">
 			<a href="/" class="cancel-button">Cancel</a>
-			<a href="./delete" class="delete-button">× Delete</a>
+			<input type="submit" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}"/>
 		{% endif %}
 	</form>
 </section>

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import time
 
 from main import RequestHandler
 from google.appengine.ext import ndb
@@ -8,6 +9,7 @@ from lxml.html.clean import Cleaner
 from auth import user_required
 from models import Post, Comment, User
 
+import logging
 
 # HTML cleaner
 ALLOW_TAGS = ['a', 'li', 'ol', 'ul', 'em', 'strong', 'del', 'ins', 'br', 'p', #symantic tags
@@ -30,7 +32,7 @@ class WelcomeHandler(RequestHandler):
 class BlogFrontpage(RequestHandler):
 	def get(self):
 		# Posts
-		posts = Post.query().order(-Post.created).fetch() #TODO: pagination
+		posts = Post.query().order(-Post.created).fetch(20) #TODO: pagination
 		
 		# Users
 		user_keys = set((p.author for p in posts)) 
@@ -40,6 +42,15 @@ class BlogFrontpage(RequestHandler):
 		
 		self.render('blog-frontpage.html', posts=posts, users_dict=users_dict)
 
+class BlogOnePost(RequestHandler):
+	def get(self, post_id):
+		post = Post.get_by_id(int(post_id))
+		if not post:
+			self.abort(404)
+		
+		author_dict = post.author.get().to_dict(include=['name', 'avatar'])
+		
+		self.render('blog-onepost.html', post=post, author_dict = author_dict)
 
 def _verify_post_params(request):
 	''' 
@@ -91,7 +102,7 @@ class BlogNewpost(RequestHandler):
 			return
 		
 		post_key = post.put() # save
-		self.redirect(self.uri_for('blog-post',  post_id = post_key.id() ))
+		self.redirect(self.uri_for('blog-onepost',  post_id = post_key.id() ))
 		
 	def _serve(self, **params):
 		self.render('blog-edit.html', new=True, **params)
@@ -119,7 +130,16 @@ class BlogEdit(RequestHandler):
 		
 		if not _user_is_author(self.user, post):
 			self.abort(403)
-		
+
+		# Delete button was pressed
+		if self.request.get('delete'):
+			post.key.delete()
+			time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
+					# So wait a little bit and let ndb to invalidate caches.
+					# There must be a better solution.
+			self.redirect(self.uri_for('home'))
+			return
+			
 		is_ok, params = _verify_post_params(self.request)
 		if not is_ok:
 			# show userform with error messages
@@ -129,22 +149,11 @@ class BlogEdit(RequestHandler):
 		post.title = params['title']
 		post.content = params['content']
 		post.put() # save
-		self.redirect(self.uri_for('blog-post',  post_id = post.key.id() ))
+		self.redirect(self.uri_for('blog-onepost',  post_id = post.key.id() ))
 		
 	def _serve(self, **params):
 		self.render('blog-edit.html', **params)
-
-class BlogPost(RequestHandler):
-	def get(self, post_id):
-		post = Post.get_by_id(post_id)
 		
-		self.render('blog-post.html', post=post)
-
-class BlogDelete(RequestHandler):
-	#FIXME: @author_required
-	def get(self, post_id):
-		
-		self.write("Delete %s" %post_id)
 		
 class BlogVote(RequestHandler):
 	@user_required
