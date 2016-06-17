@@ -152,6 +152,7 @@ class BlogEdit(RequestHandler):
 		self.redirect(self.uri_for('blog-onepost',  post_id = post.key.id() ))
 		
 	def _serve(self, **params):
+		logging.info(self.request.get('hehe'))
 		self.render('blog-edit.html', **params)
 		
 		

@@ -12,7 +12,7 @@ body {
 }
 
 .width-wrap {
-    max-width: 900px;
+    max-width: 760px;
     margin: 0 auto; /* center */
     padding: 16px;
 }
