@@ -62,6 +62,8 @@ def _verify_post_params(request):
 	Returns a tuple: (is_ok, template parameters)
 	'''
 	is_ok = True
+	title = ''
+	content = '' 
 	try:
 		title = request.POST['title'] # using POST instead of .get()
 		content = request.POST['content-html']
@@ -129,7 +131,7 @@ class BlogEdit(RequestHandler):
 		if not _user_is_author(self.user, post):
 			self.abort(403)
 		
-		self._serve(title=post.title, content=post.content)
+		self._serve(post_id = post_id, title=post.title, content=post.content)
 	
 	@user_required
 	@csrf_check
@@ -142,16 +144,6 @@ class BlogEdit(RequestHandler):
 		if not _user_is_author(self.user, post):
 			self.abort(403)
 		
-		#FIXME: make separate delete form, move code to /delete handler
-		# Delete button was pressed
-		if 'delete' in self.request.POST:
-			post.key.delete()
-			time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
-					# So wait a little bit and let ndb to invalidate caches.
-					# There must be a better solution.
-			self.redirect(self.uri_for('home'))
-			return
-			
 		is_ok, params = _verify_post_params(self.request)
 		if not is_ok:
 			# show userform with error messages
@@ -167,6 +159,31 @@ class BlogEdit(RequestHandler):
 		self.render('blog-edit.html', **params)
 
 
+class BlogDelete(RequestHandler):
+	def get(self, post_id):
+		# calling with get is probably a user's mistake. redirect silently.
+		self.redirect(self.uri_for('blog-edit', post_id=post_id))
+	
+	@csrf_check
+	def post(self, post_id): 
+		post = Post.get_by_id(int(post_id))
+		
+		if not post:
+			self.abort(404)
+		
+		if not _user_is_author(self.user, post):
+			self.abort(403)
+		
+		post.key.delete()
+		time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
+				# So wait a little bit and let ndb to invalidate caches.
+				# There must be a better solution.
+		
+		self.redirect(self.uri_for('home'))
+
+#FIXME: make separate delete form, move code to /delete handler
+		# Delete button was pressed
+		
 # Comments
 
 

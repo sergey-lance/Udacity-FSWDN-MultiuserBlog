@@ -40,7 +40,8 @@ class RequestHandler(webapp2.RequestHandler):
 	def render_str(self, template, **params):
 		params['user'] = self.user_info
 		params['csrf_token'] = self.csrf_token
-		params['uri_for_csrf'] = self.uri_for_csrf
+		params['csrf_token_for'] = self.csrf_token_for
+		params['uri_for_csrf'] = self.uri_for_csrf #fnction
 		
 		return render_str(template, **params)
 
@@ -127,6 +128,9 @@ class RequestHandler(webapp2.RequestHandler):
 		kvargs[CSFR_PARAM_NAME] = token
 		return webapp2.uri_for(name, *args, **kvargs)
 
+	def csrf_token_for(self, name, **kvargs):
+		uri_noargs = webapp2.uri_for(name,**kvargs)
+		return self.gen_csrf_token(uri = uri_noargs)
 
 def csrf_check(handler):
 	""" Decorator for CSRF token check.
@@ -179,7 +183,7 @@ app = webapp2.WSGIApplication([
 		PathPrefixRoute(r'/<post_id:\d+/?>', [
 				Route(r'', 'handlers.BlogOnePost', name='blog-onepost'), #done
 				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
-				#~ Route(r'/delete', 'handlers.BlogEdit', handler_method='delete', name='blog-delete'), #
+				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
 				Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
 				Route(r'/comment', 'comments.PostComment', name='post-comment' ), #
 		]),

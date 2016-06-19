@@ -18,11 +18,16 @@
 	input[type=submit] {background: #55fa55; margin: 1em 0;}
 	.trumbowyg-box {margin: 0;}
 	.cancel-button {margin: 0 1em;}
+	input.delete-button {background: red; color: white; }
 </style>
 
 <section class="edit-form-wrapper">
 	<h2>{% if new %}New post{% else %}Edit{% endif %}</h2>
-	<form method="post">
+	{% if new %}
+	<form method="post" action="{{ uri_for('blog-newpost') }}">
+	{% else %}
+	<form method="post" action="{{ uri_for('blog-edit', post_id=post_id) }}">
+	{% endif %}
 		{{ csrf.input() }}
 		<label>Title:</label>
 		<input type="text" name="title" value="{{title|e}}" />
@@ -38,9 +43,14 @@
 		{% else %}
 			<input type="submit" value="Update">
 			<a href="/" class="cancel-button">Cancel</a>
-			<input type="submit" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}"/>
 		{% endif %}
 	</form>
+	{% if not new %}
+		<form method="post" action="{{ uri_for('blog-delete',post_id=post_id) }}">
+			{{ csrf.input_for('blog-delete', post_id=post_id) }}
+			<input type="submit" class="delete-button" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}"/>
+		</form>
+	{% endif %}
 </section>
 {% endblock %}
 
