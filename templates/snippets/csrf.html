@@ -1,0 +1,7 @@
+{% macro input() -%}
+   <input type="hidden" name="token" value="{{csrf_token}}">
+{%- endmacro %}
+
+{% macro uri_for(name) -%}
+   {{ uri_for_csrf(name) }}
+{%- endmacro %}

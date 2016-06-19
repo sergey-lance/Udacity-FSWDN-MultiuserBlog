@@ -23,6 +23,7 @@
 <section class="edit-form-wrapper">
 	<h2>{% if new %}New post{% else %}Edit{% endif %}</h2>
 	<form method="post">
+		{{ csrf.input() }}
 		<label>Title:</label>
 		<input type="text" name="title" value="{{title|e}}" />
 		<span class='error'>{{err_title|safe}}</span>

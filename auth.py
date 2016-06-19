@@ -7,7 +7,7 @@ from google.appengine.ext import ndb
 from webapp2_extras.auth import InvalidAuthIdError
 from webapp2_extras.auth import InvalidPasswordError
 
-from main import RequestHandler
+from main import RequestHandler, csrf_check
 
 # Docs:
 # https://webapp-improved.appspot.com/_modules/webapp2_extras/appengine/auth/models.html
@@ -28,16 +28,21 @@ def user_required(handler):
 			return handler(self, *args, **kwargs)
 
 	return check_login
-
+	
 
 class LoginHandler(RequestHandler):
 	def get(self):
 		self._serve()
 	
 	def post(self):
-		username = self.request.POST['username']
-		password = self.request.POST['password']
+		try:
+			username = self.request.POST['username']
+			password = self.request.POST['password']
 		
+		except KeyError: # something misterious is happening
+			self._serve()
+			return
+			
 		params = dict(username=username)
 		
 		if not username or not password:
@@ -59,12 +64,12 @@ class LoginHandler(RequestHandler):
 		
 		self._serve(params)
 	
-	
 	def _serve(self, params={}):
 		self.render('login.html', **params)
 
 
 class LogoutHandler(RequestHandler):
+	@csrf_check 	# to prevent the things like "<img src='/logout'>"
 	def get(self):
 		self.auth.unset_session()
 		self.redirect(self.uri_for('home'))
@@ -81,17 +86,27 @@ def valid_email(email):
 	return (email=="") or EMAIL_RE.match(email)
 
 
-
 class SignupHandler(RequestHandler):
 	def get(self):
+		if self.user : # already logged in
+			self.abort(406, 'Already logged in.')
 		self._serve()
 	
 	def post(self):
-		username= self.request.POST['username']
-		password = self.request.POST['password']
-		verify = self.request.POST['verify']
-		email = self.request.POST['email']
-		
+		if self.user: # already logged in
+			# redirect silently since user probably a user's mistake
+			self.redirect(self.uri_for('home'))
+	
+		try:
+			username= self.request.POST['username']
+			password = self.request.POST['password']
+			verify = self.request.POST['verify']
+			email = self.request.POST['email']
+
+		except KeyError:
+			# this can't normally happen
+			self._serve()
+			
 		params = dict(username = username, email = email)
 		err_params = {}
 		

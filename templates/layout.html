@@ -1,3 +1,4 @@
+{% import 'snippets/csrf.html' as csrf with context %}
 <!DOCTYPE html>
 <html class="{% if user %}logged-in{% endif %}">
 <head>
@@ -17,7 +18,7 @@
 	<header id="top" class="width-wrap">
 		<div class="login-menu">{% if user %} Logged in as <b>{{user.name|title}}</b>
 		{% if user.avatar %}<img class="login-menu-avatar" src="/img/ava/{{user.avatar}}">{% endif %}<br>
-		<a href="{{ uri_for('logout') }}">Logout</a>
+		<a href="{{csrf.uri_for('logout')}}">Logout</a>
 		{%else %}<a href="{{ uri_for('login') }}#login">Log In</a> | <a href="{{ uri_for('signup') }}#signup">Sign Up</a>
 		{% endif %}</div>
 		<h1 class="logo"><a href="/"><img src="/img/logo2.png" alt="Cat A Strophe !" /></a></h1>

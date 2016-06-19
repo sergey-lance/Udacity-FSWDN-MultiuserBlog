@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
+import logging
 
-from main import RequestHandler
 from google.appengine.ext import ndb
 from lxml.html.clean import Cleaner
 
+from main import RequestHandler, csrf_check
 from auth import user_required
 from models import Post, Comment, User
 
-import logging
 
 # HTML cleaner
-ALLOW_TAGS = ['a', 'li', 'ol', 'ul', 'em', 'strong', 'del', 'ins', 'br', 'p', #symantic tags
+
+ALLOW_TAGS = [ 'a', 'em', 'strong', 'del', 'ins', 'br', 'p', #symantic tags
+		'li', 'ol', 'ul', #lists
 		'abbr', 'acronym','sub', 'sup', 'pre', 'code', #some harmless tags
 		]
 		
@@ -23,7 +25,9 @@ _html_cleaner = Cleaner(
 		remove_unknown_tags = False, #need this
 		)
 
-# Request Handlers
+
+# Blog handlers
+
 class WelcomeHandler(RequestHandler):
 	@user_required
 	def get(self):
@@ -58,9 +62,13 @@ def _verify_post_params(request):
 	Returns a tuple: (is_ok, template parameters)
 	'''
 	is_ok = True
+	try:
+		title = request.POST['title'] # using POST instead of .get()
+		content = request.POST['content-html']
 	
-	title = request.POST['title'] # using POST instead of .get()
-	content = request.POST['content-html']
+	except KeyError: #both fields should present in POST
+		is_ok = False
+		
 	if content:
 		content = _html_cleaner.clean_html(content)
 	
@@ -82,12 +90,14 @@ def _user_is_author(user, post):
 	else:
 		return False
 
+
 class BlogNewpost(RequestHandler):
 	@user_required
 	def get(self):
 		self._serve()
 	
 	@user_required
+	@csrf_check
 	def post(self):
 		is_ok, params = _verify_post_params(self.request)
 		
@@ -118,10 +128,11 @@ class BlogEdit(RequestHandler):
 		
 		if not _user_is_author(self.user, post):
 			self.abort(403)
-			
+		
 		self._serve(title=post.title, content=post.content)
 	
 	@user_required
+	@csrf_check
 	def post(self, post_id):
 		post = Post.get_by_id(int(post_id))
 		
@@ -130,9 +141,10 @@ class BlogEdit(RequestHandler):
 		
 		if not _user_is_author(self.user, post):
 			self.abort(403)
-
+		
+		#FIXME: make separate delete form, move code to /delete handler
 		# Delete button was pressed
-		if self.request.POST['delete']:
+		if 'delete' in self.request.POST:
 			post.key.delete()
 			time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
 					# So wait a little bit and let ndb to invalidate caches.
@@ -153,8 +165,13 @@ class BlogEdit(RequestHandler):
 		
 	def _serve(self, **params):
 		self.render('blog-edit.html', **params)
-		
-		
+
+
+# Comments
+
+
+# Ratings
+
 class BlogVote(RequestHandler):
 	@user_required
 	def get(self, post_id):
