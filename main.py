@@ -34,6 +34,8 @@ def render_str(template, **params):
 	return t.render(params) 
 
 class RequestHandler(webapp2.RequestHandler):
+	prevent_embedding = True # prevent embedding the page in <iframe> on another sites 
+	
 	def write(self, *a, **kw):
 		self.response.out.write(*a, **kw)
 
@@ -46,6 +48,9 @@ class RequestHandler(webapp2.RequestHandler):
 		return render_str(template, **params)
 
 	def render(self, template, **kw):
+		if self.prevent_embedding:
+			self.response.headers.add('X-Frame-Options', 'DENY')
+			
 		self.write(self.render_str(template, **kw))
 		
 	@webapp2.cached_property
