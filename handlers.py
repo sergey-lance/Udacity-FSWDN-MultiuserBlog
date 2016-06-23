@@ -71,6 +71,14 @@ class BlogOnePost(BlogRequestHandler):
 		
 		author_dict = post.author.get().to_dict(include=['name', 'avatar'])
 		comments = ndb.get_multi(post.comments)
+		
+		# purge absent comments from list
+		absent_comment_idxs = [idx for idx, x in enumerate(comments) if x is None]
+		if absent_comments_idxs:
+			for i in absent_comments_idxs:
+				del post.comments[i]
+			post.put() #save post
+			
 		comments = filter(None, comments)
 		comment_authors_keys = [c.author for c in comments if hasattr(c, 'author') ]
 		users_dict = User.get_userdata(comment_authors_keys, fields = ['name', 'avatar'])
