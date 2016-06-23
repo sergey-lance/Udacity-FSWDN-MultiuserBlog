@@ -74,8 +74,8 @@ class BlogOnePost(BlogRequestHandler):
 		
 		# purge absent comments from list
 		absent_comment_idxs = [idx for idx, x in enumerate(comments) if x is None]
-		if absent_comments_idxs:
-			for i in absent_comments_idxs:
+		if absent_comment_idxs:
+			for i in absent_comment_idxs:
 				del post.comments[i]
 			post.put() #save post
 			
