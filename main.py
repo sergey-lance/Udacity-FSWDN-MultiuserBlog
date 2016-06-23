@@ -15,8 +15,12 @@ from webapp2_extras import sessions
 
 import hmac
 import logging
+try:
+	from urlparse import urlparse #python2.7
+except ImportError:
+	from urllib.parse import urlparse #python3
 
-CSFR_PARAM_NAME = 'token'
+CSRF_PARAM_NAME = 'token'
 
 ## Template engine
 # TODO: a better solution: https://webapp-improved.appspot.com/api/webapp2_extras/jinja2.html#webapp2_extras.jinja2.Jinja2
@@ -41,10 +45,12 @@ class RequestHandler(webapp2.RequestHandler):
 
 	def render_str(self, template, **params):
 		params['user'] = self.user_info
-		params['csrf_token'] = self.csrf_token
-		params['csrf_token_for'] = self.csrf_token_for
-		params['uri_for_csrf'] = self.uri_for_csrf #fnction
-		
+		params['csrf_helpers'] = {
+			'token': self.csrf_token,
+			'gen_token': self.gen_csrf_token, #function
+			'token_for': self.get_csrf_token_for, #function
+			'uri_for': self.get_csrf_uri_for, #function
+			}
 		return render_str(template, **params)
 
 	def render(self, template, **kw):
@@ -102,11 +108,14 @@ class RequestHandler(webapp2.RequestHandler):
 			webapp2.RequestHandler.dispatch(self)
 		finally:
 			self.session_store.save_sessions(self.response)
-
+	
+	
 # CSRF handlers	
-	def gen_csrf_token(self, uri = None):
+	def gen_csrf_token(self, uri=None):
 		''' Generate a token to prevent CSRF attacks. 
-			token = hash(session.token + rquest.path)
+			Token is unique for user session and URI:
+			  token = hash(session.token + rquest.path)
+			
 			uri: to generate token for another URI 
 		'''
 		if not self.user_info: # no user session...
@@ -114,55 +123,70 @@ class RequestHandler(webapp2.RequestHandler):
 		
 		if uri is None:
 			uri = self.request.path
+		else:
+			uri = urlparse(uri).path
 		
-		secret = self.user_info[CSFR_PARAM_NAME] + uri
-		return hmac.new(
-				key=bytearray(secret, 'utf-8'),
-				#~ digestmod=hashlib.sha256
-			).hexdigest()
+		secret = self.user_info['token'] + uri
+		token = hmac.new(
+					key=bytearray(secret, 'utf-8'),
+					# digestmod=hashlib.sha256
+				).hexdigest()
+			
+		return token
+			
+	def check_csrf_token(self, token):
+		if self.csrf_token == token \
+			or self.csrf_token is None: # nothing to match:
+				return True
+		return False
 	
 	@property
 	def csrf_token(self):
-		return self.gen_csrf_token()
-	
-	def uri_for_csrf(self, name, *args, **kvargs):
-		''' A handy function to generate csrf-aware URI's like /bebe?token=beba1234...
+		''' Get CSRF token as a request property.
 		'''
-		uri_noargs = webapp2.uri_for(name) #assume it will be equal to request.path 
-		token = self.gen_csrf_token(uri = uri_noargs)
-		kvargs[CSFR_PARAM_NAME] = token
-		return webapp2.uri_for(name, *args, **kvargs)
+		return self.gen_csrf_token(self.request.path)
 
-	def csrf_token_for(self, name, **kvargs):
-		uri_noargs = webapp2.uri_for(name,**kvargs)
-		return self.gen_csrf_token(uri = uri_noargs)
+	def get_csrf_token_for(self, route_name, *a, **kva):
+		''' Generate token for specified route.
+		'''
+		uri = webapp2.uri_for(route_name, *a, **kva)
+		uri_path = urlparse(uri).path	# the same as request.path
+		return self.gen_csrf_token(uri = uri_path)
+		
+	def get_csrf_uri_for(self, route_name, *a, **kva ):
+		''' A handy function to generate csrf-aware URI's like /bebe?param=1&token=ab12cd34...
+		'''
+		logging.warn('CSRF')
+		logging.warn(route_name)
+		token = self.get_csrf_token_for(route_name)
+		kva[CSRF_PARAM_NAME] = token
+		return webapp2.uri_for(route_name, *a, **kva)
+
 
 def csrf_check(handler):
-	""" Decorator for CSRF token check.
-		Look for parameter with name 'CSFR_PARAM_NAME'
-		 in POST for posts and in GET for other request types.
+	''' Decorator for CSRF token check.
 		
+		Look for parameter with name 'CSRF_PARAM_NAME'
+		in POST for posts and in GET for other request types.
 		Aborts request if token is not valid.
-	"""
-	def check_csrf_token(self, *args, **kwargs):
-		
+	'''
+	def _check_csrf_token(self, *args, **kwargs):
 		req = self.request
 		try:
 			if req.method == 'POST':
-				token = self.request.POST[CSFR_PARAM_NAME]
+				token = self.request.POST[CSRF_PARAM_NAME]
 			else:
-				token = self.request.GET[CSFR_PARAM_NAME]
+				token = self.request.GET[CSRF_PARAM_NAME]
 		except KeyError:
-			self.abort(401, explanation='CSRF token required')
-		
-		if self.csrf_token == token \
-			or self.csrf_token is None: # nothing to match:
+			self.abort(401, explanation='CSRF token required.')
 			
+		if self.check_csrf_token(token):
 			return handler(self, *args, **kwargs)
 		else:
 			self.abort(401, explanation='CSRF token doesn\'t match.')
 
-	return check_csrf_token
+	return _check_csrf_token
+	
 	
 ## Application configuration
 
@@ -190,11 +214,11 @@ app = webapp2.WSGIApplication([
 				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
 				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
 				Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
-				Route(r'/comment', 'comments.PostComment', name='post-comment' ), #
-		]),
-		PathPrefixRoute(r'/comments/<comment_id:\d+>', [
-			Route(r'/edit', 'comments.EditComment', name='comment-edit'),
-			Route(r'/delete', 'comments.DeleteComment', name='comment-delete'),
+				Route(r'/comment', 'handlers.PostComment', name='blog-comment' ), #
+				PathPrefixRoute(r'/comments/<comment_id:\d+/?>', [
+					Route(r'/edit', 'handlers.EditComment', name='comment-edit'),
+					Route(r'/delete', 'handlers.DeleteComment', name='comment-delete'),
+				]),
 		]),
 	]),
 	Route('/login', 'auth.LoginHandler', name="login"), #done

@@ -1,0 +1,49 @@
+{% import 'snippets/csrf.html' as csrf with context %}
+
+{% macro comment_show(comment, author, user_is_author=False) -%}
+	{# Display a single comment #}
+	{% set comment_id = comment.key.id()|int %}
+
+	<article class="comment">
+		<span class="comment-content">{{ comment.content|safe }}</span> — 
+		<span class="comment-author">{{ author.name }}</span>
+		<span class="comment-created">{{ comment.created.strftime('%d-%m-%Y') }}</span>
+		<div class="comment-actions">
+			{% if user_is_author %}
+				{% set delete_uri=uri_for('comment-delete', post_id = post_id, comment_id = comment_id) %}
+				{% set edit_uri=uri_for('comment-edit', post_id = post_id, comment_id = comment_id) %}
+				
+				{{ csrf.post_button(delete_uri, 'delete') }}
+				| <a href="{{ uri_for('comment-edit', post_id = post_id, comment_id = comment_id) }}">edit</a> 
+			{% endif %}
+		</div>
+	</article>
+{%- endmacro %}
+
+
+{% macro comment_edit(comment, post_id, comment_id) -%}
+	{% set uri_edit=uri_for('comment-edit', post_id = post_id, comment_id = comment_id) %}
+	<form class="edit-comment-form" method="post" action="{{ uri_edit }}">
+		{{ csrf.input(uri=uri_edit) }}
+		<textarea name="comment-html" class='comment-area'>{{ comment.content|safe }}</textarea>
+		<input type="submit" value="Save"> |<a href="{{ uri_for('blog-onepost', post_id = post_id) }}">cancel</a>
+	</form>
+{%- endmacro %}
+
+
+<section class="comments">
+{% for comment in comments %}
+	{% set author = users_dict[comment.author] %}
+	{% set comment_id = comment.key.id() %}
+	{% set user_is_author = user is defined and (comment.author.id() == user.user_id) %}
+
+	{% if not user_is_author or editor_for_comment|int != comment_id %}
+		{{ comment_show(comment, author, user_is_author) }}
+		
+	{% else %}
+		{# display editor for comment #}
+		{{ comment_edit(comment, post_id, comment_id) }}
+		
+	{% endif %}
+{% endfor %}
+</section>

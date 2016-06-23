@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import time
+import time, logging
 from webapp2_extras.appengine.auth.models import User
 from webapp2_extras.security import generate_password_hash 
 
@@ -37,7 +37,14 @@ class User(User):
 				return user, timestamp
 
 		return None, None
-
+	
+	@classmethod
+	def get_userdata(cls, user_keys, fields=['name','avatar']):
+		''' Fetch user info at once to save PRCs. '''
+		users = ndb.get_multi(user_keys)
+		users_data = (u.to_dict(include=fields) for u in users)
+		return dict(zip(user_keys, users_data))
+		 
 
 class Votes(ndb.Model):
 	upvoters = ndb.KeyProperty(kind = User,repeated=True)
@@ -54,7 +61,6 @@ class Record(ndb.Model): # attributes are common for posts and comments
 class Comment(Record):
 	locked = ndb.BooleanProperty() # True means the author of the comment can't change it anymore...
 				# (because of timeout or because it had been answered by another user.)
-	
 	
 class Post(Record):
 	title = ndb.StringProperty()
