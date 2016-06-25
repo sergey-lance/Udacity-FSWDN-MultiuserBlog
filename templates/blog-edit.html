@@ -46,8 +46,9 @@
 		{% endif %}
 	</form>
 	{% if not new %}
-		<form method="post" action="{{ uri_for('blog-delete',post_id=post_id) }}">
-			{{ csrf.input_for('blog-delete', post_id=post_id) }}
+		{% set delete_uri = uri_for('blog-delete',post_id=post_id) %}
+		<form method="post" action="{{ delete_uri }}">
+			{{ csrf.input(delete_uri) }}
 			<input type="submit" class="delete-button" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}"/>
 		</form>
 	{% endif %}
