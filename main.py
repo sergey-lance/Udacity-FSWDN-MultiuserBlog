@@ -61,28 +61,28 @@ class RequestHandler(webapp2.RequestHandler):
 		
 	@webapp2.cached_property
 	def auth(self):
-		"""Shortcut to access the auth instance as a property."""
+		'''Shortcut to access the auth instance as a property.'''
 		return auth.get_auth()
 		
 	@webapp2.cached_property
 	def user_info(self):
-		"""Shortcut to access a subset of the user attributes that are stored
+		'''Shortcut to access a subset of the user attributes that are stored
 		in the session.
 		The list of attributes to store in the session is specified in
 			config['webapp2_extras.auth']['user_attributes'].
 		:returns
 			A dictionary with most user information
-		"""
+		'''
 		return self.auth.get_user_by_session()
 	
 	@webapp2.cached_property
 	def user(self):
-		"""Shortcut to access the current logged in user.
+		'''Shortcut to access the current logged in user.
 		Unlike user_info, it fetches information from the persistence layer and
 			returns an instance of the underlying model.
 		:returns
 			The instance of the user model associated to the logged in user.
-		"""
+		'''
 		user_info = self.user_info
 		if user_info:
 			return self.user_model.get_by_id(user_info['user_id'])
@@ -91,14 +91,14 @@ class RequestHandler(webapp2.RequestHandler):
 	
 	@webapp2.cached_property
 	def user_model(self):
-		"""Returns the implementation of the user model.
+		'''Returns the implementation of the user model.
 		It is consistent with config['webapp2_extras.auth']['user_model'], if set.
-		"""    
+		'''    
 		return self.auth.store.user_model
 
 	@webapp2.cached_property
 	def session(self):
-		"""Shortcut to access the current session."""
+		'''Shortcut to access the current session.'''
 		return self.session_store.get_session(backend="datastore")
 
 	# this is needed for webapp2 sessions to work
@@ -156,9 +156,7 @@ class RequestHandler(webapp2.RequestHandler):
 	def get_csrf_uri_for(self, route_name, *a, **kva ):
 		''' A handy function to generate csrf-aware URI's like /bebe?param=1&token=ab12cd34...
 		'''
-		logging.warn('CSRF')
-		logging.warn(route_name)
-		token = self.get_csrf_token_for(route_name)
+		token = self.get_csrf_token_for(route_name, **kva)
 		kva[CSRF_PARAM_NAME] = token
 		return webapp2.uri_for(route_name, *a, **kva)
 
@@ -197,7 +195,7 @@ appconfig = {
 	},
 	'webapp2_extras.sessions': {
 		'secret_key': 'BEBEBEChangeItOnProductionServerBEBEBE',
-		'cookie_args':{'httponly':True}, # enforce session cookies not to be accessible by JS
+		'cookie_args': {'httponly': True}, # enforce session cookies not to be accessible by JS
 	}
 }
 
@@ -209,15 +207,15 @@ app = webapp2.WSGIApplication([
 	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'), #done
 	PathPrefixRoute('/blog', [
 		Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), #done
-		PathPrefixRoute(r'/<post_id:\d+/?>', [
+		PathPrefixRoute(r'/<post_id:\d+>', [
 				Route(r'', 'handlers.BlogOnePost', name='blog-onepost'), #done
 				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
-				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #
+				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #done
 				Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
-				Route(r'/comment', 'handlers.PostComment', name='blog-comment' ), #
-				PathPrefixRoute(r'/comments/<comment_id:\d+/?>', [
-					Route(r'/edit', 'handlers.EditComment', name='comment-edit'),
-					Route(r'/delete', 'handlers.DeleteComment', name='comment-delete'),
+				Route(r'/comment', 'handlers.PostComment', name='blog-comment' ), #done
+				PathPrefixRoute(r'/comments/<comment_id:\d+>', [ #done
+					Route(r'/edit', 'handlers.EditComment', name='comment-edit'), #done
+					Route(r'/delete', 'handlers.DeleteComment', name='comment-delete'), #done
 				]),
 		]),
 	]),

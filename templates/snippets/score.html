@@ -1,0 +1,14 @@
+{% import 'snippets/csrf.html' as csrf with context %}
+
+<p class="blog-votes">
+	<a class="vote-button-down" {% if user.user_id not in post.downvotes -%}
+	 href="{{ csrf.uri_for('blog-vote', post_id=post_id, like='down')}}"
+	{%- endif %}>-</a>
+	
+	<span class="vote-result">{{ post.score or 0 }}{#<- suppress None #}</span>
+	
+	<a class="vote-button-up" {% if user.user_id not in post.upvotes -%}
+		href="{{ csrf.uri_for('blog-vote', post_id=post_id, like='up')}}"
+	{%- endif %}>+</a>
+	
+</p>

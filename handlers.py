@@ -314,9 +314,44 @@ class DeleteComment(CommentRequestHandler):
 
 # Ratings
 
-class BlogVote(RequestHandler):
+class BlogVote(BlogRequestHandler):
+	
 	@user_required
+	@csrf_check
 	def get(self, post_id):
-		self.write("Vote %s" %post_id)
+		post = self._grab_post(post_id)
+		
+		if post.author == self.user.key:
+			# Flash: you can't vote for your own posts
+			self._serve(post_id)
+			return
+		
+		user_id = self.user.key.id()
+		logging.warn(user_id)
+		
+		like = self.request.get('like')
+		if like not in ('up', 'down'):
+			self.abort(406, explanation='Wrong value.')
+		
+		# remove user if exist
+		post.downvotes = [x for x in post.downvotes if x and x != user_id]
+		post.upvotes = [x for x in post.upvotes if x and x != user_id]
+		
+		if like == 'up':
+			post.upvotes.append(user_id)
+		
+		elif like == 'down':
+			post.downvotes.append(user_id)
+		
+		post.put()
+		post.update_score()
+		
+		self._serve(post_id)
+		
+	def _serve(self, post_id):
+		self.redirect(self.uri_for('blog-onepost',  post_id = post_id ))
+		
+	
+	
 			
 

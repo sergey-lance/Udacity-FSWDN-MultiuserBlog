@@ -21,12 +21,8 @@
 	</div> 
 	
 	<div class="article-info">
-	{% if post.score is defined %}
-		<p class="blog-votes">
-			<a class="vote-button-down" href="#down">-</a>
-			<span class="vote-result">{{ post.score }}</span>
-			<a class="vote-button-up" href="#up">+</a>
-		</p>
+	{% if post.score is defined and not user_is_author %}
+		{% include 'snippets/score.html' %}
 	{% endif %}
 	</div>
 	

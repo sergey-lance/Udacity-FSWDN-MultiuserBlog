@@ -44,27 +44,29 @@ class User(User):
 		users = ndb.get_multi(user_keys)
 		users_data = (u.to_dict(include=fields) for u in users)
 		return dict(zip(user_keys, users_data))
-		 
-
-class Votes(ndb.Model):
-	upvoters = ndb.KeyProperty(kind = User,repeated=True)
-	downvoters = ndb.KeyProperty(kind = User,repeated=True)
-	score = ndb.IntegerProperty()
-
+		
 
 class Record(ndb.Model): # attributes are common for posts and comments
 	content = ndb.TextProperty()
 	author = ndb.KeyProperty(kind = User)
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	
-	
 class Comment(Record):
-	locked = ndb.BooleanProperty() # True means the author of the comment can't change it anymore...
+	#locked = ndb.BooleanProperty() # True means the author of the comment can't change it anymore...
 				# (because of timeout or because it had been answered by another user.)
+	pass
 	
 class Post(Record):
 	title = ndb.StringProperty()
 	comments = ndb.KeyProperty(kind = Comment, repeated = True) # recursive comments (comment on comment)
-
-
+	score = ndb.IntegerProperty(required=True, default=0) # Votes for record
+	upvotes = ndb.IntegerProperty(repeated=True)
+	downvotes = ndb.IntegerProperty(repeated=True)
+	
+	@ndb.transactional
+	def update_score(self):
+		score = len(self.upvotes) - len(self.downvotes)
+		self.score = score
+		self.put()
+		
 
