@@ -223,3 +223,5 @@ footer nav:after {
 	text-decoration: none;
 	border-radius: 3px;
 	}
+
+.like-button.disabled {color: gray; border: 1px dotted gray;}
