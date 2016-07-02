@@ -59,13 +59,13 @@ class Comment(Record):
 class Post(Record):
 	title = ndb.StringProperty()
 	comments = ndb.KeyProperty(kind = Comment, repeated = True) # recursive comments (comment on comment)
-	score = ndb.IntegerProperty(required=True, default=0) # Votes for record
-	upvotes = ndb.IntegerProperty(repeated=True)
-	downvotes = ndb.IntegerProperty(repeated=True)
+	score = ndb.IntegerProperty(required=True, default=0) # Likes minus Dislikes
+	upvoters = ndb.IntegerProperty(repeated=True) # a list of user UIDs
+	downvoters = ndb.IntegerProperty(repeated=True)
 	
 	@ndb.transactional
 	def update_score(self):
-		score = len(self.upvotes) - len(self.downvotes)
+		score = len(self.upvoters) - len(self.downvoters)
 		self.score = score
 		self.put()
 		

@@ -211,7 +211,7 @@ app = webapp2.WSGIApplication([
 				Route(r'', 'handlers.BlogOnePost', name='blog-onepost'), #done
 				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
 				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #done
-				Route(r'/vote', 'handlers.BlogVote', name='blog-vote' ), #
+				Route(r'/like', 'handlers.BlogLike', name='blog-like' ), #
 				Route(r'/comment', 'handlers.PostComment', name='blog-comment' ), #done
 				PathPrefixRoute(r'/comments/<comment_id:\d+>', [ #done
 					Route(r'/edit', 'handlers.EditComment', name='comment-edit'), #done

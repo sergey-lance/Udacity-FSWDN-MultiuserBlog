@@ -314,7 +314,7 @@ class DeleteComment(CommentRequestHandler):
 
 # Ratings
 
-class BlogVote(BlogRequestHandler):
+class BlogLike(BlogRequestHandler):
 	
 	@user_required
 	@csrf_check
@@ -329,19 +329,19 @@ class BlogVote(BlogRequestHandler):
 		user_id = self.user.key.id()
 		logging.warn(user_id)
 		
-		like = self.request.get('like')
+		like = self.request.get('vote')
 		if like not in ('up', 'down'):
 			self.abort(406, explanation='Wrong value.')
 		
 		# remove user if exist
-		post.downvotes = [x for x in post.downvotes if x and x != user_id]
-		post.upvotes = [x for x in post.upvotes if x and x != user_id]
+		post.downvoters = [x for x in post.downvoters if x and x != user_id]
+		post.upvoters = [x for x in post.upvoters if x and x != user_id]
 		
 		if like == 'up':
-			post.upvotes.append(user_id)
+			post.upvoters.append(user_id)
 		
 		elif like == 'down':
-			post.downvotes.append(user_id)
+			post.downvoters.append(user_id)
 		
 		post.put()
 		post.update_score()
@@ -349,6 +349,15 @@ class BlogVote(BlogRequestHandler):
 		self._serve(post_id)
 		
 	def _serve(self, post_id):
+		try:
+			if self.request.headers['X-Requested-With'] == 'XMLHttpRequest':
+				# Requested with AJAX
+				self.response.write('ok')
+				return
+				
+		except KeyError:
+			pass # no such header
+		
 		self.redirect(self.uri_for('blog-onepost',  post_id = post_id ))
 		
 	

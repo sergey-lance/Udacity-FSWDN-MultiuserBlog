@@ -179,7 +179,7 @@ footer nav:after {
 	clear:both;
 	}
 
-.blog-votes {
+.blog-likes {
 	margin:0;
 	display: block;
 	float:right;
@@ -187,7 +187,7 @@ footer nav:after {
 	font-size: 120%;
 }
 
-.blog-votes .vote-button-up, .blog-votes .vote-button-down {
+.blog-likes .like-button {
 	display: inline-block;
 	margin: 0 auto;
 	height: 1em;
@@ -202,10 +202,6 @@ footer nav:after {
 	line-height: 1em;
 }
 
-.blog-votes .vote-result {
-	
-	}
-	
 .blog-comments {
 	float: left;
 	margin: 0;
