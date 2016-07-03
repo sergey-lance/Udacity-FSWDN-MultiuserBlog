@@ -45,6 +45,7 @@ class RequestHandler(webapp2.RequestHandler):
 
 	def render_str(self, template, **params):
 		params['user'] = self.user_info
+		params['flashes'] = self.session.get_flashes()
 		params['csrf_helpers'] = {
 			'token': self.csrf_token,
 			'gen_token': self.gen_csrf_token, #function
@@ -223,5 +224,6 @@ app = webapp2.WSGIApplication([
 	Route('/logout', 'auth.LogoutHandler', name="logout"), #done
 	Route('/signup', 'auth.SignupHandler', name="signup"), #done
 	Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), #done
+	Route('/flashtest', 'handlers.FlashTest', name="flashtest"), #done
 	
 ], debug=True, config = appconfig)

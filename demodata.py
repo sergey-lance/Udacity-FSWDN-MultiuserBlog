@@ -71,12 +71,12 @@ def populate():
 		if author in voters:
 			voters.remove(author) #can't vote for his own post
 			
-		voters_keys = [getattr(user, 'key') for user in voters]
-		r = random.randint(0, len(voters_keys))
+		voters_ids = [getattr(user, 'key').id() for user in voters]
+		r = random.randint(0, len(voters_ids))
 		
 		_ = Post(author = author,
-				upvoters = voters_keys[:r],
-				downvoters = voters_keys[r:],
+				upvoters = voters_ids[:r],
+				downvoters = voters_ids[r:],
 				created = randdate(),
 				**p)
 		_.put()

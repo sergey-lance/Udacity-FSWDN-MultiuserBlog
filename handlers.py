@@ -361,6 +361,9 @@ class BlogLike(BlogRequestHandler):
 		self.redirect(self.uri_for('blog-onepost',  post_id = post_id ))
 		
 	
-	
-			
-
+class FlashTest(RequestHandler):
+	def get(self):
+		self.session.add_flash("Please drive safely!", level='warn')
+		self.session.add_flash("Testing, testing!", level='info')
+		self.session.add_flash("x_x You really screwed up.", level='error')
+		self.redirect(self.uri_for('home'))

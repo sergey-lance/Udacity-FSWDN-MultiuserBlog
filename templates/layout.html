@@ -27,6 +27,9 @@
 		<h1 class="logo"><a href="/"><img src="/img/logo2.png" alt="Cat A Strophe !" /></a></h1>
 		<p class="subtitle">the world's first microblog for cats</p>
 	</header>
+	<div class="flash width-wrap">
+	{% include 'snippets/flash.html' %}
+	</div>
 	<div class="pagewrap width-wrap">
 		{% block body %}{% endblock %}
 	</div>

@@ -1,0 +1,12 @@
+* flash messages to user
+* cleanup css
+
+
+features:
+* beautiful dates for comments
+* inline-editable comments
+* pagination
+* mark voted posts
+
+bugs:
+* kitty hides on scrolldown: set body height
