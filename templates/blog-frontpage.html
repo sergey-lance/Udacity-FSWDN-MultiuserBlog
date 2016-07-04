@@ -1,52 +1,53 @@
 {% extends "layout.html" %}
 
 {% block body %}
-
-{% if user %}
-<nav class="frontpage-actions">
-	<a href="{{uri_for('blog-newpost')}}" class="frontpage-actions-link add-post">Add post</a>
-</nav>
-{% endif %}
+{%- if user %}
+	<nav class="frontpage-actions">
+		<a href="{{ uri_for('blog-newpost') }}" class="frontpage-actions-link add-post">Add post</a>
+	</nav>
+{% endif -%}
 
 {% if posts %}
-	{% for post in posts %}
-		{% set post_id = post.key.id() %}
-		{% set author = users_dict[post.author] %}
-		{% set uri = uri_for('blog-onepost', post_id=post_id ) %}
-		{% set user_is_author = user is defined and (post.author.id() == user.user_id) %}
-<article>
+	{%- for post in posts -%}
+		{%- set post_id = post.key.id() %}
+		{%- set author = users_dict[post.author] %}
+		{%- set uri = uri_for('blog-onepost', post_id=post_id ) %}
+		{%- set user_is_author = user is defined and (post.author.id() == user.user_id) %}
+<article class="frontpage-blog-article">
 	<h2 class="blog-title">
-		<a href="{{uri}}">
-			{{post.title|striptags|e}}
-		</a>
+		<a href="{{uri}}">{{ post.title|striptags|e }}</a>
 	</h2>
-	<p class="blog-date">{{post.created.strftime('%B %d, %Y') }}</p>
-	<p class="blog-author">
-		{% if user_is_author %}
-		<span class="name">by <em>You</em></span><a href="{{uri}}/edit">edit</a></p>
-		{% else %}
-		<img class='avatar' src="/img/ava/{{author['avatar']}}">
-		<span class="name">by <em>{{author['name']}}</em></span></p>
-		{% endif %}
-	<div class="article-contents">
-	{{post.content|safe}}
-	</div> 
-	<div class="article-info">
-		{% if post.score is defined and not user_is_author %}
+	{% if user_is_author -%}
+	<p class="blog-author-actions"><a class="action-button" href="{{uri}}/edit">edit</a></p>
+	{%- endif %}
+	<p class="blog-info">
+		{%- if user_is_author %}
+		<span class="blog-info-author">by <em>You</em></span>
+		{%- else %}
+		<img class="blog-info-avatar" src="/img/ava/{{author['avatar']}}">
+		<span class="blog-info-author">by <em>{{author['name']}}</em></span>
+		{%- endif -%}
+		<span class="blog-info-date"> {{post.created.strftime('%B %d, %Y') }}</span>
+	</p>
+	<div class="blog-content">{{ post.content|safe }}</div> 
+	<div class="blog-user-actions">
+		{%- if post.score is defined %}
 			{% include 'snippets/score.html' %}
-		{% endif %}
-		
+		{% endif -%}
+		{%- if post.comments -%}
 		<p class="blog-comments"><a href="{{uri}}">
-		{%if post.comments %}
-			{{ post.comments|count }} comments
-		{% else %}
-			Comment
-		{% endif %}
+			{%- set count=post.comments|count %}
+			{%- if count == 1 -%}
+				{{ count }} comment
+			{%- else -%}
+				{{ count }} comments
+			{%- endif -%}
 		</a></p>
+		{%- endif -%}
 	</div>
 </article>
 	{% endfor %}
 {% else %}
-<p>The blog is empty.</p>
+	<p>The blog is empty.</p>
 {% endif %}
 {% endblock %}

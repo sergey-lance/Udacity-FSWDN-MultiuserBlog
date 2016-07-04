@@ -42,8 +42,8 @@ $(function(){
 			cache: false,
 			timeout: 1000,
 			success: function(data){
-				$(that).toggleClass('disabled')
-				$(that.elm_opposite_btn).toggleClass('disabled')
+				$(that).addClass('disabled')
+				$(that.elm_opposite_btn).removeClass('disabled')
 				
 				new_score = that.elm_score.initial_value + ((that.is_up)?1:-1)
 				that.elm_score.innerText = new_score
