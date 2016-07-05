@@ -68,8 +68,6 @@ class BlogFrontpage(BlogRequestHandler):
 class BlogOnePost(BlogRequestHandler):
 	def get(self, post_id):
 		post = self._grab_post(post_id)
-		
-		author_dict = post.author.get().to_dict(include=['name', 'avatar'])
 		comments = ndb.get_multi(post.comments)
 		
 		# purge absent comments from list
@@ -78,10 +76,23 @@ class BlogOnePost(BlogRequestHandler):
 			for i in absent_comment_idxs:
 				del post.comments[i]
 			post.put() #save post
-			
 		comments = filter(None, comments)
+		
+		fields = ['name', 'avatar']
+		
+		# fetch comment authors
 		comment_authors_keys = [c.author for c in comments if hasattr(c, 'author') ]
-		users_dict = User.get_userdata(comment_authors_keys, fields = ['name', 'avatar'])
+		users_dict = User.get_userdata(comment_authors_keys, fields = fields)
+		
+		# fetch voters
+		user_id = self.user.key.id()
+		upvoters_keys = [ ndb.Key('User', x) for x in post.upvoters if x != user_id ]
+		downvoters_keys = [ ndb.Key('User', x) for x in post.downvoters if x != user_id]
+		users_dict.update( User.get_userdata(upvoters_keys, fields = fields) )
+		users_dict.update( User.get_userdata(downvoters_keys, fields = fields) )
+		
+		#fetch user
+		users_dict[post.author] = post.author.get().to_dict(include = fields)
 		
 		#edit mode for certan comment
 		editor_for_comment = self.request.get('edit_comment')[0:] 
@@ -90,9 +101,10 @@ class BlogOnePost(BlogRequestHandler):
 			post = post,
 			post_id = post_id,
 			comments = comments, 
-			author_dict = author_dict,
 			users_dict = users_dict,
 			editor_for_comment = editor_for_comment, 
+			upvoters = upvoters_keys,
+			downvoters = downvoters_keys
 		)
 		
 		self.render('blog-onepost.html', **params)

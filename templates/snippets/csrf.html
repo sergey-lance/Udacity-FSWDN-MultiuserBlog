@@ -18,6 +18,6 @@
 {% macro post_button(action_uri, caption="Submit", input_attrs="") -%}
 <form style="display: inline-block" method="post" action="{{ action_uri }}">
 {{ input( action_uri ) }}
-<input type="submit" value="{{ caption }}" {{ input_attrs }}>
+<button type="submit" {{ input_attrs }}>{{ caption }}</button>
 </form>
 {%- endmacro %}

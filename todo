@@ -1,14 +1,3 @@
-* cleanup css
-
-* log in to vote
-* html5 tags
 * css in forms
+* warns delete/save comment, add post, delete post 
 
-features:
-* beautiful dates for comments
-* inline-editable comments
-* pagination
-* mark voted posts
-
-bugs:
-* kitty hides on scrolldown: set body height

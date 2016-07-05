@@ -76,7 +76,7 @@ def populate():
 		
 		_ = Post(author = author,
 				upvoters = voters_ids[:r],
-				downvoters = voters_ids[r:],
+				#~ downvoters = voters_ids[r:], #be nice, set only upvotes
 				created = randdate(),
 				**p)
 		_.put()

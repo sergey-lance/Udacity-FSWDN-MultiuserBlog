@@ -16,11 +16,11 @@
 	label {display: block; margin: 10px 0 0 0; }
 	.content-area {height: 100px; width: 100%;}
 	.error {display: block; color: red}
-	input[name=title] {width: 70%;}
-	input[type=submit] {background: #55fa55; margin: 1em 0;}
+	button[name=title] {width: 70%;}
+	button[type=submit] {background: #55fa55; margin: 1em 0;}
 	.trumbowyg-box {margin: 0;}
 	.cancel-button {margin: 0 1em;}
-	input.delete-button {background: red; color: white; }
+	button.delete-button {background: red; color: white; }
 </style>
 
 <section class="edit-form-wrapper">
@@ -41,9 +41,9 @@
 		</textarea>
 		<div class='error'>{{error|safe}}</div>
 		{% if new %}
-			<input type="submit" value="Create">
+			<button type="submit">Create</button>
 		{% else %}
-			<input type="submit" value="Update">
+			<button type="submit">Update</button>
 			<a href="/" class="cancel-button">Cancel</a>
 		{% endif %}
 	</form>
@@ -51,7 +51,7 @@
 		{% set delete_uri = uri_for('blog-delete',post_id=post_id) %}
 		<form method="post" action="{{ delete_uri }}">
 			{{ csrf.input(delete_uri) }}
-			<input type="submit" class="delete-button" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}"/>
+			<button type="submit" class="delete-button" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}">
 		</form>
 	{% endif %}
 </section>

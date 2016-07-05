@@ -135,12 +135,11 @@ html.logged-in body {
 		}
 }
 
-.frontpage-blog-article {
+.frontpage-blog-article, .single-post-article{
 	position: relative;
-	margin: 2em;
-	padding: 1em;
+	margin: 1em;
+	padding: 1.5em;
 	margin-left: 3em;
-	
 	}
 
 .frontpage-blog-article~.frontpage-blog-article {
@@ -163,11 +162,8 @@ html.logged-in body {
 	}
 
 .blog-author-actions {
-	position: absolute;
-	right:0;
-	bottom:0;
-	margin: 0;
-	padding: 0;
+	display: block;
+	margin: 1em 0.5em;
 	}
 
 .blog-info {
@@ -263,5 +259,48 @@ html.logged-in body {
 html.logged-in .like-button.disabled {
 	background-color: #fccccc;
 	color: white;
-	border: 1px solid #fccccc;
+	border: 1px solid #fceeee;
+	cursor: default;
+	}
+	
+.comment {
+	border-bottom: 1px solid #fceeee;
+	padding: 5px ;
+	}
+
+.comment-actions {
+	display: inline-block;
+	float: right;
+	}
+	
+.comment-actions .button-delete {
+	color: red;
+	}
+	
+.comment-created {
+	font-size: 80%;
+	color: gray;
+	}
+	
+.comment-info {
+	white-space: nowrap;
+}
+
+.single-post-article .comment-area {
+	width: 100%;
+	}
+
+.comment-actions button ,
+.comment-actions input {
+	 background:none!important;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     text-decoration:underline; 
+     cursor: pointer;
+	}
+	
+.comments-post { 
+	margin-top: 1em;
 	}

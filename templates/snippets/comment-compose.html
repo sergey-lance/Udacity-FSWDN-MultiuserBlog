@@ -4,5 +4,5 @@
 	{{ csrf.input_for('blog-comment', post_id = post_id) }}
 	<textarea name="comment-html" class='comment-area'>{{comment_draft|safe}}</textarea>
 	<div class='error'>{{error}}</div>
-	<input type="submit" value="Comment">
+	<button type="submit">Comment</button>
 </form>

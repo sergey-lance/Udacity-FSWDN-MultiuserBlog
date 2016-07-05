@@ -1,30 +1,8 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<article class="single-post">
-	{% set uri = uri_for('blog-onepost', post_id=post.key.id() ) %}
-	{% set user_is_author = user is defined and (post.author.id() == user.user_id) %}
-	
-	<h2 class="blog-title">{{ post.title|e }}</h2>
-	<p class="blog-date">{{ post.created.strftime('%B %d, %Y') }}</p>
-	<p class="blog-author">
-	{% if user_is_author %}
-		<span class="name">by <em class="username">You</em></span>
-		<a href="{{ uri }}/edit">edit</a>
-	{% else %}
-		<img class='avatar' src="/img/ava/{{ author_dict.avatar }}">
-		<span class="name">by <em>{{author_dict.name}}</em></span>
-	{% endif %}
-	</p>
-	
-	<div class="article-contents">{{ post.content|safe }}
-	</div> 
-	
-	<div class="article-info">
-	{% if post.score is defined and not user_is_author %}
-		{% include 'snippets/score.html' %}
-	{% endif %}
-	</div>
+<article class="single-post-article">
+	{% include 'snippets/article-one.html' with context %}
 	
 	{% if comments %}
 		<h3>Comments:</h3>
@@ -32,8 +10,10 @@
 	{% endif %}
 
 	{% if user %}
+	<div class="comments-post">
 		<em>Post your comment:</em>
 		{% include 'snippets/comment-compose.html' with context %}
+	</div>
 	{% else %}
 		<em><a href="{{ uri_for('login') }}">Log in</a> to post your comment.</em>
 	{% endif %}

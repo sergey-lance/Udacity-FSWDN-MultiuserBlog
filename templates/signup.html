@@ -34,10 +34,10 @@
 			<span class="error">{{err_email|safe}}</span>
 		</p>
 		<p class="catcha">Are you a cat?</p>
-		<img width="300" src="/img/recatcha-static.gif" onclick="this.src='/img/recatcha-ok.gif'; this.onclick=null;">
+		<img width="300" src="/img/recatcha-static.gif" onclick="this.src='/img/recatcha-ok.gif'; this.onclick=null;" alt="Catcha">
 		<!-- Yeah, it's fake. ;) -->
 		
-		<input type="submit">
+		<button type="submit">Submit</button>
 	</form>
 </section>
 {% endblock %}
