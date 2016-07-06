@@ -51,7 +51,7 @@
 		{% set delete_uri = uri_for('blog-delete',post_id=post_id) %}
 		<form method="post" action="{{ delete_uri }}">
 			{{ csrf.input(delete_uri) }}
-			<button type="submit" class="delete-button" name="delete" value="× Delete" onclick="if(!confirm('Delete the post?')){return false;}">
+			<button type="submit" class="delete-button" name="delete" onclick="if(!confirm('Delete the post?')){return false;}">× Delete</button>
 		</form>
 	{% endif %}
 </section>

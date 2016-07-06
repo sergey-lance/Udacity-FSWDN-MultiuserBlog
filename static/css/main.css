@@ -33,7 +33,7 @@ html {
 
 /* make some fun =0.0= */
 html.logged-in {
-	background: url("/img/nyan-bg2.png") repeat right top fixed;
+	background: url("/img/nyan-bg2.png") repeat-x right top fixed;
 	background-color: #115788;
 }
 html.logged-in body {
@@ -292,6 +292,7 @@ html.logged-in .like-button.disabled {
 
 .comment-actions button ,
 .comment-actions input {
+	/* show buttons as links */
 	 background:none!important;
      border:none; 
      padding:0!important;
@@ -303,4 +304,27 @@ html.logged-in .like-button.disabled {
 	
 .comments-post { 
 	margin-top: 1em;
+	}
+	
+.flash {
+	padding: 0;
+	background-color: white;
+	max-width: 792px;
+	}
+.flash-message {
+	padding: 3px 1em 3px 4em ;
+	margin:0;
+	line-height: 2.5em;
+	}
+	
+.flash .flash-info {
+	background: #dde url('/img/info.png') no-repeat 16px center; 
+	}
+	
+.flash .flash-error {
+	background: #fbb url('/img/error.png') no-repeat 16px center; 
+	}
+	
+.flash .flash-warn {
+	background: #ffa url('/img/warn.png') no-repeat 16px center; 
 	}

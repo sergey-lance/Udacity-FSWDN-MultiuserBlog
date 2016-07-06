@@ -85,7 +85,8 @@ class BlogOnePost(BlogRequestHandler):
 		users_dict = User.get_userdata(comment_authors_keys, fields = fields)
 		
 		# fetch voters
-		user_id = self.user.key.id()
+		user_id = self.user.key.id() if self.user is not None else None
+
 		upvoters_keys = [ ndb.Key('User', x) for x in post.upvoters if x != user_id ]
 		downvoters_keys = [ ndb.Key('User', x) for x in post.downvoters if x != user_id]
 		users_dict.update( User.get_userdata(upvoters_keys, fields = fields) )
@@ -125,9 +126,7 @@ def _verify_post_params(request):
 	except KeyError: #both fields should present in POST
 		is_ok = False
 		
-	#TODO: strip tags title = 
 	content = _clean_html(content)
-	
 	params = dict(title=title, content=content)
 	
 	if not title:
@@ -161,6 +160,7 @@ class BlogNewpost(BlogRequestHandler):
 				)
 		
 		post_key = post.put() # save
+		self.session.add_flash("Your post have been added!", level='info')
 		self.redirect(self.uri_for('blog-onepost',  post_id = post_key.id() ))
 		
 	def _serve(self, **params):
@@ -212,6 +212,8 @@ class BlogDelete(BlogRequestHandler):
 			self.abort(403)
 		
 		post.key.delete()
+		self.session.add_flash("Post deleted :(", level='info')
+		
 		time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
 				# So wait a little bit and let ndb to invalidate caches.
 				# There must be a better solution.
@@ -297,8 +299,7 @@ class EditComment(CommentRequestHandler):
 		comment.content = comment_html
 		comment.put()
 		
-		#TODO: Flash "Saved"
-		
+		self.session.add_flash("Comment saved.", level='info')
 		self._serve(post_id)
 		
 	def _serve(self, post_id):
@@ -320,8 +321,7 @@ class DeleteComment(CommentRequestHandler):
 		comment.key.delete()
 		post.put()
 		
-		#TODO: flash a message
-	
+		self.session.add_flash("Comment deleted.", level='info')
 		self.redirect(self.uri_for('blog-onepost',post_id = post_id))
 
 # Ratings
