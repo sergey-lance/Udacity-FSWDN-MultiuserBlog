@@ -126,7 +126,7 @@ class SignupHandler(RequestHandler):
 			err_params['err_email'] = 'Email seems to be not valid.'
 
 		if not valid_username(username):
-			err_params['err_username'] = 'Username can contain only letters, '
+			err_params['err_username'] = 'Username can contain only letters, '\
 				'numbers, dashes (-) and underscores (_).'
 
 		if password == "":

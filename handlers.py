@@ -212,7 +212,7 @@ class BlogDelete(BlogRequestHandler):
 			self.abort(403)
 		
 		post.key.delete()
-		self.session.add_flash("Post deleted :(", level='info')
+		self.session.add_flash("The post has been deleted :-(", level='info')
 		
 		time.sleep(0.1)  
 			#fix: a ghost of deleted entry appears on homepage after redirect.
