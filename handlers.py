@@ -160,7 +160,7 @@ class BlogNewpost(BlogRequestHandler):
 				)
 		
 		post_key = post.put() # save
-		self.session.add_flash("Your post have been added!", level='info')
+		self.session.add_flash("Your post have been published!", level='info')
 		self.redirect(self.uri_for('blog-onepost',  post_id = post_key.id() ))
 		
 	def _serve(self, **params):
@@ -214,9 +214,10 @@ class BlogDelete(BlogRequestHandler):
 		post.key.delete()
 		self.session.add_flash("Post deleted :(", level='info')
 		
-		time.sleep(0.1) #fix: a ghost of deleted entry appears on homepage after redirect.
-				# So wait a little bit and let ndb to invalidate caches.
-				# There must be a better solution.
+		time.sleep(0.1)  
+			#fix: a ghost of deleted entry appears on homepage after redirect.
+			# So wait a little bit and let ndb to invalidate caches.
+			# There must be a better solution.
 		
 		self.redirect(self.uri_for('home'))
 

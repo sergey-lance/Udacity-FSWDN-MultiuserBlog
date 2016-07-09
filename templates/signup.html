@@ -2,17 +2,16 @@
 
 {% block body %}
 <style type="text/css">
-	.signup-form-wrapper {position:relative; max-width: 400px; margin: 0 auto;}
-	form {display: block; padding: 1em; }
-	label {display: inline-block; width: 8em; text-align:right;}
-	input {display: inline-block; width: 10em; }
-	.error {display: block; margin-left: 8em; color: red}
-	input[type=submit] {display: block; margin: 1em 0;}
-	.catcha {margin-bottom:0;}
+	.signup-form-wrap {position:relative; max-width: 400px; margin: 0 auto;}
+	.signup-form {display: block; padding: 1em; }
+	.signup-form label {display: inline-block; width: 8em; text-align:right;}
+	.signup-form input {display: inline-block; width: 10em; }
+	.signup-form .error {display: block; margin-left: 8em; color: red}
+	.signup-form button[type=submit] {display: block; margin: 1em 0;}
 </style>
-<section class="signup-form-wrapper">
+<section class="signup-form-wrap">
 	<h2 id='signup'>Signup</h2>
-	<form method="post">
+	<form method="post" class="signup-form">
 		<p>
 			<label class="username">Username:</label>
 			<input type="text" name="username" value="{{username}}" autofocus>

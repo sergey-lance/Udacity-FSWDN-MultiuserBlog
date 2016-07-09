@@ -2,17 +2,17 @@
 
 {% block body %}
 <style type="text/css">
-	.login-form-wrapper { width:22em; margin: 0 auto;}
-	form { background: #eef; padding: 1em;}
-	label {display: inline-block; width: 8em; text-align:right; }
-	input {display: inline-block; width: 10em; }
-	.error {display: block; margin-left: 8em; color: red}
-	button[type=submit] {display: block; margin: 0 auto;}
+	.login-form-wrap { width:22em; margin: 0 auto;}
+	.login-form { background: #eef; padding: 1em;}
+	.login-form label {display: inline-block; width: 8em; text-align:right; }
+	.login-form input {display: inline-block; width: 10em; }
+	.login-form .error {display: block; margin-left: 8em; color: red}
+	.login-form button[type=submit] {display: block; margin: 0 auto;}
 </style>
 
-<section class="login-form-wrapper">
+<section class="login-form-wrap">
 <h2 id="login">Login</h2>
-<form method="post">
+<form method="post" class="login-form">
 	<p>
 		<label class="username">Username:</label>
 		<input type="text" name="username" value="{{username}}" autofocus>

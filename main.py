@@ -23,7 +23,6 @@ except ImportError:
 CSRF_PARAM_NAME = 'token'
 
 ## Template engine
-# TODO: a better solution: https://webapp-improved.appspot.com/api/webapp2_extras/jinja2.html#webapp2_extras.jinja2.Jinja2
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(
@@ -31,14 +30,14 @@ jinja_env = jinja2.Environment(
 		autoescape = True,
 		)
 
-jinja_env.globals['uri_for'] = webapp2.uri_for # to use uri_for() in templates
+jinja_env.globals['uri_for'] = webapp2.uri_for # make uri_for() available in templates
 
 def render_str(template, **params):
 	t = jinja_env.get_template(template)
 	return t.render(params) 
 
 class RequestHandler(webapp2.RequestHandler):
-	prevent_embedding = True # prevent embedding the page in <iframe> on another sites 
+	prevent_embedding = True # by default prevent embedding the page in <iframe> on another sites 
 	
 	def write(self, *a, **kw):
 		self.response.out.write(*a, **kw)
@@ -205,25 +204,25 @@ Route = webapp2.Route
 
 app = webapp2.WSGIApplication([
 	RedirectRoute('/', redirect_to='/blog/', name='home'),
-	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'), #done
+	RedirectRoute('/blog/', 'handlers.BlogFrontpage', strict_slash=True, name='blog-frontpage'), 
 	PathPrefixRoute('/blog', [
-		Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), #done
+		Route('/newpost', 'handlers.BlogNewpost', name='blog-newpost'), 
 		PathPrefixRoute(r'/<post_id:\d+>', [
-				Route(r'', 'handlers.BlogOnePost', name='blog-onepost'), #done
-				Route(r'/edit', 'handlers.BlogEdit', name='blog-edit'), #done
-				Route(r'/delete', 'handlers.BlogDelete', name='blog-delete'), #done
-				Route(r'/like', 'handlers.BlogLike', name='blog-like' ), #
-				Route(r'/comment', 'handlers.PostComment', name='blog-comment' ), #done
-				PathPrefixRoute(r'/comments/<comment_id:\d+>', [ #done
-					Route(r'/edit', 'handlers.EditComment', name='comment-edit'), #done
-					Route(r'/delete', 'handlers.DeleteComment', name='comment-delete'), #done
-				]),
+			Route('', 'handlers.BlogOnePost', name='blog-onepost'), 
+			Route('/edit', 'handlers.BlogEdit', name='blog-edit'), 
+			Route('/delete', 'handlers.BlogDelete', name='blog-delete'), 
+			Route('/like', 'handlers.BlogLike', name='blog-like' ),
+			Route('/comment', 'handlers.PostComment', name='blog-comment' ), 
+			PathPrefixRoute(r'/comments/<comment_id:\d+>', [ 
+				Route('/edit', 'handlers.EditComment', name='comment-edit'), 
+				Route('/delete', 'handlers.DeleteComment', name='comment-delete'), 
+			]),
 		]),
 	]),
-	Route('/login', 'auth.LoginHandler', name="login"), #done
-	Route('/logout', 'auth.LogoutHandler', name="logout"), #done
-	Route('/signup', 'auth.SignupHandler', name="signup"), #done
-	Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), #done
-	Route('/flashtest', 'handlers.FlashTest', name="flashtest"), #done
+	Route('/login', 'auth.LoginHandler', name="login"), 
+	Route('/logout', 'auth.LogoutHandler', name="logout"), 
+	Route('/signup', 'auth.SignupHandler', name="signup"), 
+	Route('/welcome', 'handlers.WelcomeHandler', name="welcome"), 
+	Route('/flashtest', 'handlers.FlashTest', name="flashtest"), # for debug
 	
 ], debug=True, config = appconfig)

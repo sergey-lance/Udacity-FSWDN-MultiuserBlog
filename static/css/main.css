@@ -328,3 +328,8 @@ html.logged-in .like-button.disabled {
 .flash .flash-warn {
 	background: #ffa url('/img/warn.png') no-repeat 16px center; 
 	}
+	
+.button-delete {
+	background: red;
+	color: white;
+	}

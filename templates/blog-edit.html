@@ -10,25 +10,23 @@
 <link rel="stylesheet" href="/js/trumbowyg/ui/trumbowyg.min.css">
 {% endblock %}
 
-{% block body %}
+{% block body %}	
 <style type="text/css">
-	.edit-form-wrapper {position:relative; margin: 0 auto; padding: 0 2em; }
-	label {display: block; margin: 10px 0 0 0; }
-	.content-area {height: 100px; width: 100%;}
-	.error {display: block; color: red}
-	button[name=title] {width: 70%;}
-	button[type=submit] {background: #55fa55; margin: 1em 0;}
-	.trumbowyg-box {margin: 0;}
-	.cancel-button {margin: 0 1em;}
-	button.delete-button {background: red; color: white; }
+	.edit-form-wrap {position:relative; margin: 0 auto; padding: 0 2em; }
+	.edit-form label {display: block; margin: 10px 0 0 0; }
+	.edit-form .error {display: block; color: red}
+	.edit-form input[name=title] {width: 70%;}
+	.edit-form button[type=submit] {background: #55fa55; margin: 1em 0;}
+	.edit-form .trumbowyg-box {margin: 0;}
+	.edit-form .cancel-button {margin: 0 1em;}
 </style>
 
-<section class="edit-form-wrapper">
+<section class="edit-form-wrap">
 	<h2>{% if new %}New post{% else %}Edit{% endif %}</h2>
 	{% if new %}
-	<form method="post" action="{{ uri_for('blog-newpost') }}">
+	<form class="edit-form" method="post" action="{{ uri_for('blog-newpost') }}">
 	{% else %}
-	<form method="post" action="{{ uri_for('blog-edit', post_id=post_id) }}">
+	<form class="edit-form" method="post" action="{{ uri_for('blog-edit', post_id=post_id) }}">
 	{% endif %}
 		{{ csrf.input() }}
 		<label>Title:</label>
@@ -49,9 +47,10 @@
 	</form>
 	{% if not new %}
 		{% set delete_uri = uri_for('blog-delete',post_id=post_id) %}
-		<form method="post" action="{{ delete_uri }}">
+		<form class="delete-form" method="post" action="{{ delete_uri }}">
 			{{ csrf.input(delete_uri) }}
-			<button type="submit" class="delete-button" name="delete" onclick="if(!confirm('Delete the post?')){return false;}">× Delete</button>
+			<button type="submit" class="button-delete" name="delete"
+				onclick="if(!confirm('Delete the post?')){return false;}">× Delete</button>
 		</form>
 	{% endif %}
 </section>
