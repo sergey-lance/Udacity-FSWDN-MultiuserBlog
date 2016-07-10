@@ -1,0 +1,37 @@
+{%- set post_id = post.key.id() %}
+{%- set author = users_dict[post.author] %}
+{%- set uri = uri_for('blog-onepost', post_id=post_id ) %}
+{%- set user_is_author = user is defined and (post.author.id() == user.user_id) %}
+
+<h2 class="blog-title">
+	<a href="{{uri}}">{{ post.title|striptags|e }}</a>
+</h2>
+<p class="blog-info">
+	{%- if user_is_author %}
+	<span class="blog-info-author">by <em>You</em></span>
+	{%- else %}
+	<img class="blog-info-avatar" src="/img/ava/{{author['avatar']}}" alt="ava">
+	<span class="blog-info-author">by <em>{{author['name']}}</em></span>
+	{%- endif -%}
+	<span class="blog-info-date"> {{post.created.strftime('%B %d, %Y') }}</span>
+	{% if user_is_author -%}
+	<span  class="blog-author-actions"><a class="action-button" href="{{uri}}/edit">edit</a></span>
+	{%- endif %}
+</p>
+<div class="blog-content">{{ post.content|safe }}</div> 
+<div class="blog-user-actions">
+	{%- if post.score is defined %}
+		{% include 'snippets/score.html' %}
+	{% endif -%}
+	{%- if post.comments -%}
+	<p class="blog-comments"><a href="{{uri}}">
+		{%- set count=post.comments|count %}
+		{%- if count == 1 -%}
+			{{ count }} comment
+		{%- else -%}
+			{{ count }} comments
+		{%- endif -%}
+	</a></p>
+	{%- endif -%}
+</div>
+

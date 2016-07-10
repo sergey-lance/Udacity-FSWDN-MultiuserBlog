@@ -1,0 +1,12 @@
+{%- import 'snippets/csrf.html' as csrf with context -%}
+		<div class="login-menu">
+			{% if user %} Logged in as <b>{{user.name|title}}</b>
+				{%- if user.avatar %}
+			<img class="login-menu-avatar" src="/img/ava/{{user.avatar}}" alt="ava">
+				{%- endif -%}
+			<br>
+			<a href="{{ csrf.uri_for('logout') }}">Logout</a>
+			{%- else -%}
+			<a href="{{ uri_for('login') }}">Log In</a> | <a href="{{ uri_for('signup') }}">Sign Up</a>
+			{%- endif -%}
+		</div>

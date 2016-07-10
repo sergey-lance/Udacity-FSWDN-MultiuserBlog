@@ -1,0 +1,4 @@
+
+{% for msg, type in flashes -%}
+	<p class="flash-message flash-{{type}}"> {{msg}} </p>
+{%- endfor %}
