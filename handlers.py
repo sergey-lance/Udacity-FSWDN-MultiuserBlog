@@ -339,17 +339,19 @@ class BlogLike(BlogRequestHandler):
             return
         
         user_id = self.user.key.id()
-        logging.warn(user_id)
         
         like = self.request.get('vote')
-        if like not in ('up', 'down'):
+        if like not in ('up', 'down', 'clear'):
             self.abort(406, explanation='Wrong value.')
         
         # remove user if exist
         post.downvoters = [x for x in post.downvoters if x and x != user_id]
         post.upvoters = [x for x in post.upvoters if x and x != user_id]
+         
+        if like == 'clear':
+			pass #already cleared
         
-        if like == 'up':
+        elif like == 'up':
             post.upvoters.append(user_id)
         
         elif like == 'down':

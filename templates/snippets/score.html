@@ -1,16 +1,27 @@
 {% import 'snippets/csrf.html' as csrf with context %}
+
+{% macro like_button(text, class, param) %}
+<a rel="nofollow" class="like-button {{ class }}
+{%- if not user or user_is_author %} disabled{% endif -%}
+{%- if param == 'clear' %} voted{% endif -%}" 
+{%- if user %}
+	href="{{ csrf.uri_for('blog-like', post_id=post_id, vote=param)}}"
+{%- endif -%}
+>{{ text }}</a>
+{% endmacro %}
+		
 		<p class="blog-likes">
-			<a class="like-button like-button-down 
-			{%- if not user or user.user_id in post.downvoters or user_is_author %} disabled{% endif -%}" 
-			{%- if user %}
-				href="{{ csrf.uri_for('blog-like', post_id=post_id, vote='down')}}"
-			{%- endif -%}
-			>-</a>
+			{%- if user.user_id not in post.downvoters %}
+				{{- like_button('-', 'like-button-down', 'down') -}}
+			{% else %}
+				{{- like_button('-', 'like-button-down', 'clear') -}}
+			{% endif -%}
+			
 			<span class="like-score">{{ post.score or 0 }}{# <- suppress None #}</span>
-			<a class="like-button like-button-up
-			{%- if not user or user.user_id in post.upvoters or user_is_author %} disabled{% endif -%}"
-			{%- if user %}
-				href="{{ csrf.uri_for('blog-like', post_id=post_id, vote='up')}}"
-			{%- endif -%}
-			>+</a>
+			
+			{%- if user.user_id not in post.upvoters %}
+				{{- like_button('+', 'like-button-up', 'up') -}}
+			{% else %}
+				{{- like_button('+', 'like-button-up', 'clear') -}}
+			{% endif -%}
 		</p>

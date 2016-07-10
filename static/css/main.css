@@ -256,11 +256,10 @@ html.logged-in body {
 	border: 1px dotted gray;
 	}
 
-html.logged-in .like-button.disabled {
-	background-color: #fccccc;
+html.logged-in .like-button.voted {
+	background-color: #fa5555;
 	color: white;
-	border: 1px solid #fceeee;
-	cursor: default;
+	border: 1px solid #fa5555;
 	}
 	
 .comment {

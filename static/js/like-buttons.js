@@ -3,55 +3,88 @@
  * 
  */
 $(function(){
-	$(".like-button").click(function() {
-		disabled = $(this).hasClass('disabled')
-		is_up = $(this).hasClass('like-button-up') // true for '+', false for '-'
+	// init
+	$(".like-score").each(function(){
+		var initial_value = parseInt(this.innerText)
+		var up_btn = $(this).siblings(".like-button-up")[0]
+		var down_btn = $(this).siblings(".like-button-down")[0]
 		
+		// find out the value without our vote
+		initial_value -= ($(up_btn).hasClass('voted'))?1:0
+		initial_value += ($(down_btn).hasClass('voted'))?1:0
+		
+		this.up_btn = up_btn
+		this.down_btn = down_btn
+		this.initial_value = initial_value
+		console.log(this.initial_value)
+		
+		var self = this
+		
+		this.up = function() {
+			self.innerText = self.initial_value + 1
+			$(self.up_btn).addClass('voted')
+			$(self.down_btn).removeClass('voted')
+			history.replaceState(null, document.title, $(self).href_initial)
+		};
+		
+		this.down = function() {
+			self.innerText = self.initial_value - 1
+			$(self.down_btn).addClass('voted')
+			$(self.up_btn).removeClass('voted')
+			history.replaceState(null, document.title, $(self).href_initial)
+		};
+		
+		this.clear = function () {
+			self.innerText = self.initial_value;
+			$(self.up_btn).removeClass('voted')
+			$(self.down_btn).removeClass('voted')
+			history.replaceState(null, document.title, $(self).href_initial)
+		};
+		
+		
+	});
+	
+	$(".like-button").each(function(){
+		this.elm_score = $(this).siblings(".like-score")[0]
+		this.href_initial = this.href.replace(/&?vote=[^&]+/, '')
+	})
+	
+	$(".like-button").click(function() {
+		var disabled = $(this).hasClass('disabled')
 		if (disabled) {
 			return false; 
-		} 
+		}
 		
-		elm_score = $(this).siblings(".like-score")[0]
-		elm_opposite_btn = $(this).siblings(".like-button")[0]
-		opposite_disabled = $(elm_opposite_btn).hasClass('disabled')
+		var voted = $(this).hasClass('voted')
+		var is_up = $(this).hasClass('like-button-up') // true for '+', false for '-'
 		
-		if (typeof elm_score.initial_value === 'undefined') {
-			// remember initial value
-			score = parseInt(elm_score.innerText)
-			elm_score.initial_value = score
-			
-			//fix: make correction if user already voted:
-			if (disabled) {
-				elm_score.initial_value += (is_up) ? -1 : 1
-			} 
-			else if (opposite_disabled) {
-				elm_score.initial_value += (is_up) ? 1 : -1
+		
+		var href = this.href_initial + '&vote=clear'
+		var callback = this.elm_score.clear
+		
+		if (is_up) {
+			if (!voted) {
+				callback = this.elm_score.up
+				href = this.href_initial + '&vote=up'
+			}
+		} else {
+			if (!voted) {
+				callback = this.elm_score.down
+				href = this.href_initial + '&vote=down'
 			}
 		}
 		
-		this.is_up = is_up
-		this.elm_score = elm_score
-		this.elm_opposite_btn = elm_opposite_btn
-		
-		var that = this // reference for callbacks
-		
 		$.ajax({
 			type: "GET",
-			url: this.href,
+			url: href,
 			dataType: 'text',
 			cache: false,
 			timeout: 1000,
-			success: function(data){
-				$(that).addClass('disabled')
-				$(that.elm_opposite_btn).removeClass('disabled')
-				
-				new_score = that.elm_score.initial_value + ((that.is_up)?1:-1)
-				that.elm_score.innerText = new_score
-			},
+			success: callback,
 			error: function(xhr, status, err){
 				if (status == 'timeout') {
-					console.log('redirect')
-					//~ location.href = that.href //fallback
+					//~ console.log('redirect')
+					location.href = that.href //fallback
 				}
 			}
 		});
