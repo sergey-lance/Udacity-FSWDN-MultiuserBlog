@@ -63,16 +63,15 @@ The idea and the content were inspired by www.catipsum.com.
 #### Upload demo data to AppEngine
 0. Create an access key for [App Engine default service account](https://console.cloud.google.com/iam-admin/iam/) and set it's location to environment variable: ```export GOOGLE_APPLICATION_CREDENTIALS=/home/me/Downloads/<APP_ID-KEY_ID>.json```
 
-1. Upload the users.dat and posts.dat to AppEngine:
+1. Upload the users.dat, posts.dat and comments.dat to AppEngine:
   ```Shell
-  appcfg.py upload_data --url=http://APPNAME.appspot.com/_ah/remote_api --filename=users.dat --application=s~APPNAME
-  appcfg.py upload_data --url=http://APPNAME.appspot.com/_ah/remote_api --filename=posts.dat --application=s~APPNAME
+  for file in users.dat posts.dat comments.dat; do appcfg.py upload_data --url=http://APPNAME.appspot.com/_ah/remote_api --filename=${file} --application=s~APPNAME; done
   ```
   
-To dump data from local server use this commands:
+To dump data from local server use this one:
   ```Shell
   appcfg.py download_data --url=http://localhost:8080/_ah/remote_api --filename=users.dat --kind=User
-  appcfg.py download_data --url=http://localhost:8080/_ah/remote_api --filename=posts.dat --kind=Post
+  ...
   ```
 
 ## Copyright and license
