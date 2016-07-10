@@ -26,7 +26,7 @@ This app is created for FSWDN Udacity course according to this [specifications](
 6. press **Ctrl+C** to stop application server.
 
 #### II. Get the app and run it
-0. install dependancies: `apt-get install python-lxml python-jinja2`
+0. install dependancies: `sudo apt-get install python-lxml python-jinja2`
 1. add `google_appengine` directory to $PATH: `cd google_appengine; export PATH=$PATH:$(pwd)`
 2. Clone the master branch to any other directory: `git clone https://github.com/sergey-lance/Udacity-FSWDN-MultiuserBlog.git`
 3. `cd Udacity-FSWDN-MultiuserBlog`
