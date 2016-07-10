@@ -1,0 +1,334 @@
+/* Layout */
+html {
+	height: 100%;
+	}
+	
+body {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    min-height: 100%;
+    padding: 0; margin: 0;
+}
+
+.width-wrap {
+    max-width: 760px;
+    margin: 0 auto; /* center */
+}
+
+.page {
+	padding: 16px;
+	min-height: 20em;
+	background: white;
+	}
+
+.header {
+	padding: 16px;
+	text-align: center;
+	}
+
+/* Style */
+html {
+	background-color: #157;
+}
+
+/* make some fun =0.0= */
+html.logged-in {
+	background: url("/img/nyan-bg2.png") repeat-x right top fixed;
+	background-color: #115788;
+}
+html.logged-in body {
+	background: url("/img/nyan-flyaway.png") no-repeat right top fixed;
+}
+
+.header {
+	background-color: #fa5555;
+	color: #eee;
+	position: relative;
+	border-bottom: 1px solid #faeeee;
+	}
+	
+.header a {
+	color: #eee;
+	}
+	
+.header .logo {
+	margin: 10px auto; /* center */
+	overflow: hidden;
+	}
+
+.header .logo img {
+	width: 200px;	
+	height: 150px;
+	word-spacing: 200px; /* alt text: one word per line */
+	}
+
+.header .subtitle {
+	margin: 0;
+	text-transform: capitalize;
+	font-weight: bold;
+	}
+	
+.header .login-menu {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 1em;
+}
+
+.header .login-menu-avatar {
+	height: 50px;
+	width: 50px;
+	border: 2px solid #faeeee;
+	vertical-align: text-top;
+	float: right;
+	margin-left: 5px;
+	border-radius: 5px;
+	}
+	
+.footer {
+	padding: 16px;
+	border-top: 1px solid #bbb;
+	font-size: 80%;
+	text-align: center;
+	background: url("/img/meow.png") no-repeat 16px top;
+	background-color: #ddd;
+	}
+	
+.footer a{
+	color: #333;
+	}
+	
+.footer nav ul {
+	margin: 0;
+	padding: 0;
+	margin-left: 36px;
+	font-size: 12px;
+	}
+	
+.footer nav li {
+	float: right;
+	display: inline-block;
+	margin-left: 16px;
+}
+
+.footer nav li a {
+	text-decoration: none;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	}
+
+.footer nav li a:hover {
+	color: #fa5555;
+	transition: color 3s ease;
+}
+
+.footer .copyright {
+	float: left;
+	}
+
+@media (max-width: 650px) { /* prevent herding on small screens */
+	.footer nav:after {
+		content: '';
+		display: block;
+		clear:both;
+		}
+}
+
+.frontpage-blog-article, .single-post-article{
+	position: relative;
+	margin: 1em;
+	padding: 1.5em;
+	margin-left: 3em;
+	}
+
+.frontpage-blog-article~.frontpage-blog-article {
+	border-top: 1px solid #fadddd;
+	}
+
+.blog-title{
+	font-size: 150%;
+	width: 100%;
+	margin: 0;
+}
+
+.blog-title a {
+	text-decoration: none;
+	color: #333;
+	}
+	
+.blog-title a:hover {
+	text-decoration: underline;
+	}
+
+.blog-author-actions {
+	display: block;
+	margin: 1em 0.5em;
+	}
+
+.blog-info {
+	position: absolute;
+	right: 0;
+	top: 1em;
+	margin: 0;
+	padding: 0;
+	text-align: right;
+	}
+
+.blog-info-avatar {
+	display: block;
+	float: right;
+	border: 1px solid grey;
+	border-radius: 5px;
+	}
+	
+.blog-info-author, .blog-info-date {
+	display: block;
+	clear: right;
+	margin: 0;
+}
+
+.blog-info-date {
+	font-size: 80%;
+	color: #655;
+	}
+
+.blog-user-actions {
+	margin-top: 2em;
+	}
+	
+.frontpage-blog-article .blog-likes {
+	position: absolute;
+	left:-2em;
+	top:1em;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.frontpage-blog-article .blog-likes .like-button {
+	display: block;
+	}
+
+.frontpage-blog-article .blog-likes {
+	display: flex;
+	flex-direction: column-reverse; /* move [+] on top */
+}
+
+.frontpage-actions {
+	text-align: center;
+	}
+	
+.frontpage-actions .frontpage-actions-link {
+	padding: 5px 10px;
+	border: 1px solid #fa5555;
+	color: #fa5555;
+	text-decoration: none;
+	border-radius: 3px;
+	}
+
+
+.action-button {
+	padding: 2px 6px;
+	border: 1px solid #fa5555;
+	color: #fa5555;
+	text-decoration: none;
+	border-radius: 3px;
+	}
+	
+.like-button {
+	display: inline-block;
+	margin: 0 auto;
+	height: 1em;
+	width: 1em;
+	border: 1px solid #fa5555;
+	border-radius: 3px;
+	vertical-align: middle;
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	color: #fa5555;
+	line-height: 1em;
+}
+	
+.like-button.disabled {
+	color: gray;
+	border: 1px dotted gray;
+	}
+
+html.logged-in .like-button.voted {
+	background-color: #fa5555;
+	color: white;
+	border: 1px solid #fa5555;
+	}
+	
+.comment {
+	border-bottom: 1px solid #fceeee;
+	padding: 5px ;
+	}
+
+.comment-actions {
+	display: inline-block;
+	float: right;
+	}
+	
+.comment-actions .button-delete {
+	color: red;
+	}
+	
+.comment-created {
+	font-size: 80%;
+	color: gray;
+	}
+	
+.comment-info {
+	white-space: nowrap;
+}
+
+.single-post-article .comment-area {
+	width: 100%;
+	}
+
+.comment-actions button ,
+.comment-actions input {
+	/* show buttons as links */
+	 background:none!important;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     text-decoration:underline; 
+     cursor: pointer;
+	}
+	
+.comments-post { 
+	margin-top: 1em;
+	}
+	
+.flash {
+	padding: 0;
+	background-color: white;
+	max-width: 792px;
+	}
+.flash-message {
+	padding: 3px 1em 3px 4em ;
+	margin:0;
+	line-height: 2.5em;
+	}
+	
+.flash .flash-info {
+	background: #dde url('/img/info.png') no-repeat 16px center; 
+	}
+	
+.flash .flash-error {
+	background: #fbb url('/img/error.png') no-repeat 16px center; 
+	}
+	
+.flash .flash-warn {
+	background: #ffa url('/img/warn.png') no-repeat 16px center; 
+	}
+	
+.button-delete {
+	background: red;
+	color: white;
+	}

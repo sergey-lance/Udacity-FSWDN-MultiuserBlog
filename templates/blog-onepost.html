@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<article class="single-post-article">
+	{% include 'snippets/article-one.html' with context %}
+	
+	{% if comments %}
+		<h3>Comments:</h3>
+		{% include 'snippets/comments.html' with context %}
+	{% endif %}
+
+	{% if user %}
+	<div class="comments-post">
+		<em>Post your comment:</em>
+		{% include 'snippets/comment-compose.html' with context %}
+	</div>
+	{% else %}
+		<em><a href="{{ uri_for('login') }}">Log in</a> to post your comment.</em>
+	{% endif %}
+</article>
+{% endblock %}

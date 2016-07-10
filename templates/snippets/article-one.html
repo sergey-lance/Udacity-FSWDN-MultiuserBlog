@@ -1,0 +1,52 @@
+{%- set post_id = post.key.id() %}
+{%- set uri = uri_for('blog-onepost', post_id=post_id ) %}
+{%- set author = users_dict[post.author] %}
+{%- set user_is_author = user is defined and (post.author.id() == user.user_id) %}
+
+<h2 class="blog-title">
+	{{ post.title|striptags|e }}
+</h2>
+
+<p class="blog-info">
+	<img class="blog-info-avatar" src="/img/ava/{{author['avatar']}}" alt="ava">
+	{%- if user_is_author %}
+	<span class="blog-info-author">by <em>You</em></span>
+	{%- else %}
+	<span class="blog-info-author">by <em>{{author['name']}}</em></span>
+	{%- endif -%}
+	<span class="blog-info-date"> {{post.created.strftime('%B %d, %Y') }}</span>
+	{% if user_is_author -%}
+	<span  class="blog-author-actions"><a class="action-button" href="{{uri}}/edit">edit</a></span>
+	{%- endif %}
+</p>
+
+<div class="blog-content">{{ post.content|safe }}</div> 
+
+<div class="blog-user-actions">
+	{%- if post.score is defined %}
+		{% include 'snippets/score.html' %}
+	{% endif -%}
+</div>
+
+{% macro print_user(key) -%}
+<em class="username">{{ users_dict[key]['name'] }}</em>
+{%- endmacro %}
+
+<div class="blog-voters">
+{% if downvoters %}
+	<p> Downvotes: 
+	{% for key in downvoters %}
+		{{ print_user(key) }}{% if not loop.last %},{% endif %}
+	{% endfor %}
+	</p>
+{% endif %}
+{% if upvoters %}
+	<p> Upvotes: 
+	{% for key in upvoters %}
+		{{ print_user(key) }}{% if not loop.last %},{% endif %}
+	{% endfor %}
+	</p>
+{% endif %}
+</div>
+
+

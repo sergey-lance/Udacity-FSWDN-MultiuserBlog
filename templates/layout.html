@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="{% if user %}logged-in{% endif %}">
+<head>
+	<title>MultiuserBlog Project</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/css/normalize.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/js/jquery-1.11.3.min.js"><\/script>')</script>
+	<script src="/js/like-buttons.js"></script>
+	{%- block head %}{% endblock head %}
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<header id="top" class="width-wrap header">
+		{% include 'snippets/login-menu.html' %}
+		<h1 class="logo">
+			<a href="/"><img src="/img/logo.png" alt="CAT A STROPHE" /></a>
+		</h1>
+		<p class="subtitle">the world's first microblog for cats</p>
+	</header>
+	<div class="width-wrap flash">
+		{% include 'snippets/flash.html' %}
+	</div>
+	<div class="width-wrap page">
+		{% block body %}{% endblock %}
+	</div>
+	<footer class="width-wrap footer">
+		<nav>
+			<ul>
+				<li class="copyright">&copy; <a href="mailto:sergey-inform@ya.ru">Sergey R.</a>, 2016</li>
+				<li>/&nbsp;<a href="{{ uri_for('home') }}">Home</a></li>	
+				<li>↑&nbsp;<a href="#top">Go to top</a></li>	
+			</ul>
+		</nav>
+		<p>Inspired by <a href="http://www.catipsum.com/">www.catipsum.com</a>. <br>
+		Get a T-shirt with the logo: <a href="http://www.uppstudio.com/Cat-A-Strophe-T-Shirt-Cats">www.uppstudio.com</a>.
+		</p>
+	</footer>
+	{%- block basement %}{% endblock basement %}
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% import 'snippets/csrf.html' as csrf with context %}
+
+{% extends "layout.html" %}
+
+{% if new is not defined %}
+	{% set new = false %}
+{% endif %}
+
+{% block head %}
+<link rel="stylesheet" href="/js/trumbowyg/ui/trumbowyg.min.css">
+{% endblock %}
+
+{% block body %}	
+<style type="text/css">
+	.edit-form-wrap {position:relative; margin: 0 auto; padding: 0 2em; }
+	.edit-form > label {display: block; margin: 10px 0 0 0; }
+	.edit-form > .error {display: block; color: red}
+	.edit-form > input[name=title] {width: 70%;}
+	.edit-form > button[type=submit] {background: #55fa55; margin: 1em 0;}
+	.edit-form > .cancel-button {margin: 0 1em;}x
+	.edit-form .trumbowyg-box {margin: 0;}
+	
+</style>
+
+<section class="edit-form-wrap">
+	<h2>{% if new %}New post{% else %}Edit{% endif %}</h2>
+	{% if new %}
+	<form class="edit-form" method="post" action="{{ uri_for('blog-newpost') }}">
+	{% else %}
+	<form class="edit-form" method="post" action="{{ uri_for('blog-edit', post_id=post_id) }}">
+	{% endif %}
+		{{ csrf.input() }}
+		<label>Title:</label>
+		<input type="text" name="title" value="{{title|e}}" />
+		<span class='error'>{{err_title|safe}}</span>
+		
+		<label>Content:</label>
+		<textarea name="content-html" class='content-area htmlarea'>
+			{% if not new %}{{content|safe}}{% endif %}
+		</textarea>
+		<div class='error'>{{error|safe}}</div>
+		{% if new %}
+			<button type="submit">Create</button>
+		{% else %}
+			<button type="submit">Update</button>
+			<a href="/" class="cancel-button">Cancel</a>
+		{% endif %}
+	</form>
+	{% if not new %}
+		{% set delete_uri = uri_for('blog-delete',post_id=post_id) %}
+		<form class="delete-form" method="post" action="{{ delete_uri }}">
+			{{ csrf.input(delete_uri) }}
+			<button type="submit" class="button-delete" name="delete"
+				onclick="if(!confirm('Delete the post?')){return false;}">× Delete</button>
+		</form>
+	{% endif %}
+</section>
+{% endblock %}
+
+{% block basement %}
+<!-- // WYSIWYG html editor -->
+<script src="/js/trumbowyg/trumbowyg.min.js"></script>
+<script>
+$('.htmlarea').trumbowyg({
+    btns: [['viewHTML'],'btnGrp-semantic','btnGrp-lists',['link'],['removeformat']]
+});
+</script>
+{% endblock %}

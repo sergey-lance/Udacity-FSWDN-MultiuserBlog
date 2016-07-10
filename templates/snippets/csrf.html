@@ -1,0 +1,24 @@
+{% macro input(uri=None) -%}
+	{% if uri %}
+		{% set token=csrf_helpers.gen_token(uri) %}
+	{% else %}
+		{% set token=csrf_helpers.token %}
+	{% endif %} 
+	<input type="hidden" name="token" value="{{ token }}">
+{%- endmacro %}
+
+{% macro input_for(name, uri=None) -%}
+	<input type="hidden" name="token" value="{{ csrf_helpers.token_for(name, **kwargs) }}">
+{%- endmacro %}
+
+{% macro uri_for(name) -%}
+   {{ csrf_helpers.uri_for(name, **kwargs) }}
+{%- endmacro %}
+
+{% macro post_button(action_uri, caption="Submit", input_attrs="") -%}
+{# Creates a one-button form which behaves like a link but sends POST-request. #}
+<form style="display: inline-block" method="post" action="{{ action_uri }}">
+{{ input( action_uri ) }}
+<button type="submit" {{ input_attrs|safe }}>{{ caption }}</button>
+</form>
+{%- endmacro %}

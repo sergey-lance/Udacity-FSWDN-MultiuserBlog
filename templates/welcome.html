@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html class="logged-in">
+<head>
+	<title>Welcome!</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="refresh" content="3; url=/"> <!-- if JS refresh failed -->
+	<link rel="shortcut icon" href="./favicon.ico">
+	<link rel="stylesheet" href="/css/normalize.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+	.welcome-message {
+		margin: 0 auto;
+		padding-top: 65px;
+		text-align: center;
+	}
+
+	.welcome-message h1 {
+		color: yellow;
+		text-shadow: 3px 0 0 darkred,
+			-3px 0 0 darkred,
+			0 3px 0 darkred,
+			0 -3px 0 darkred,
+			2px 2px darkred,
+			-2px -2px 0 darkred,
+			2px -2px 0 darkred,
+			-2px 2px 0 darkred;
+	}
+	</style>
+	<script>
+	setTimeout(function () {
+		window.location.href = "/"; 
+		}, 2000);
+	</script>
+</head>
+<body style="margin:0; padding: 0">
+	<div class="welcome-message">
+		<h1>Welcome, {{user.name|striptags|title}}!</h1>
+	</div>
+</body>
+
+
+
