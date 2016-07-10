@@ -41,7 +41,7 @@ class User(User):
 
 	@classmethod
 	def get_userdata(cls, user_keys, fields=['name', 'avatar']):
-		''' Fetch user info at once to save PRCs. '''
+		""" Fetch user info at once to save PRCs. """
 		users = ndb.get_multi(user_keys)
 		users_data = (u.to_dict(include=fields) for u in users)
 		return dict(zip(user_keys, users_data))
