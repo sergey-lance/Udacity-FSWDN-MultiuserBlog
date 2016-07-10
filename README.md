@@ -50,7 +50,7 @@ This app is created for FSWDN Udacity course according to this [specifications](
 
 0. Create a key for [App Engine default service account](https://console.cloud.google.com/iam-admin/iam/) and set it's location to environment variable: ```export GOOGLE_APPLICATION_CREDENTIALS=/home/me/Downloads/<APP_ID-KEY_ID>.json```
 
-1. To dump demo data from developer server:
+1. Dump your data from developer server:
   ```
   appcfg.py download_data --url=http://localhost:8080/_ah/remote_api --filename=users.dat --kind=User
   appcfg.py download_data --url=http://localhost:8080/_ah/remote_api --filename=posts.dat --kind=Post
