@@ -128,6 +128,14 @@ html.logged-in body {
 	}
 
 @media (max-width: 650px) { /* prevent herding on small screens */
+	.blog-content {
+		margin-right: 0!important;
+	}
+	
+	.blog-info {
+		position:relative;
+	}
+
 	.footer nav:after {
 		content: '';
 		display: block;
@@ -146,10 +154,16 @@ html.logged-in body {
 	border-top: 1px solid #fadddd;
 	}
 
+.blog-content {
+	margin-right: 100px;
+	}
+
 .blog-title{
 	font-size: 150%;
-	width: 100%;
 	margin: 0;
+	margin-right: 100px;
+	margin-bottom: 1em;
+	
 }
 
 .blog-title a {
@@ -173,6 +187,7 @@ html.logged-in body {
 	margin: 0;
 	padding: 0;
 	text-align: right;
+	max-width: 80px;
 	}
 
 .blog-info-avatar {
